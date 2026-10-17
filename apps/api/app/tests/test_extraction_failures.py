@@ -12,6 +12,22 @@ from ..services.extract import validate_upload
 from .conftest import upload
 
 
+def _truncated_fir_pdf_bytes() -> bytes:
+    """Build the truncated-PDF fixture in memory.
+
+    The committed binary fixture (corrupt/fir_001_truncated.pdf) is intentionally
+    not stored in this repo. Truncating the generated documents/fir_001.pdf
+    (produced by ``python3 data/synthetic/generate.py``, a documented prerequisite
+    for the test suite) after the header objects gives a functionally identical
+    fixture: real %PDF magic bytes so upload validation passes, but no
+    cross-reference table / trailer so extraction visibly fails with
+    EXTRACTION_FAILED -- exactly what these tests assert.
+    """
+    full = (config.SYNTHETIC_DIR / "documents" / "fir_001.pdf").read_bytes()
+    assert full.startswith(b"%PDF"), "run python3 data/synthetic/generate.py first"
+    return full[:837]
+
+
 def test_corrupt_csv_reaches_extraction_failed_and_is_retryable(client, officer, investigator, admin):
     r = upload(client, officer, "CASE-0001", "corrupt/calls_corrupt.csv")
     assert r.status_code == 201, r.text
@@ -37,7 +53,12 @@ def test_corrupt_csv_reaches_extraction_failed_and_is_retryable(client, officer,
 
 
 def test_truncated_pdf_reaches_extraction_failed(client, officer, investigator):
-    r = upload(client, officer, "CASE-0001", "corrupt/fir_001_truncated.pdf")
+    r = client.post(
+        "/api/v1/cases/CASE-0001/evidence",
+        headers=officer,
+        files={"file": ("fir_001_truncated.pdf", _truncated_fir_pdf_bytes())},
+        data={"source_label": "synthetic"},
+    )
     assert r.status_code == 201, r.text
     ev = r.json()
     assert ev["status"] == "EXTRACTION_FAILED"
@@ -80,6 +101,6 @@ def test_pdf_page_cap_does_not_shadow_corruption(monkeypatch):
     """A truncated/corrupt PDF must still pass validation (and fail visibly at extraction, see
     test_truncated_pdf_reaches_extraction_failed) rather than being rejected here as a page-limit hit."""
     monkeypatch.setattr(config, "PDF_MAX_PAGES", 1)
-    truncated = (config.SYNTHETIC_DIR / "corrupt" / "fir_001_truncated.pdf").read_bytes()
+    truncated = _truncated_fir_pdf_bytes()
     v = validate_upload("fir_001_truncated.pdf", truncated)
     assert v.ok is True
