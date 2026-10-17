@@ -1,0 +1,13 @@
+.env*
+*.pyc
+__pycache__/
+storage/
+node_modules/
+.pytest_cache/
+reports/screenshots/
+*.log
+dist/
+build/
+*.zip
+.vscode/
+.idea/
