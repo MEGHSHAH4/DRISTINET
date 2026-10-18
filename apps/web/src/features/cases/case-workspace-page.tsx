@@ -8,6 +8,8 @@ import { CaseStepNav } from "./components/case-step-nav";
 import { CaseEvidenceView } from "./evidence/case-evidence-view";
 import { CaseTimeline } from "./timeline/case-timeline";
 import { CaseAuditView } from "./audit/case-audit-view";
+import { HITLStepContent } from "../hitl/hitl-workspace-page";
+import { ReportsStepContent } from "../reports/reports-page";
 import { CaseDetailSidebar } from "./components/case-detail-sidebar";
 import { ProvenanceViewer } from "@/components/evidence/ProvenanceViewer";
 import { useUIStore } from "@/stores/uiStore";
@@ -98,6 +100,10 @@ export function CaseWorkspacePage() {
             <CaseEvidenceView />
           ) : activeTab === "audit" ? (
             <CaseAuditView caseId={caseId} />
+          ) : activeTab === "hitl" ? (
+            <HITLStepContent />
+          ) : activeTab === "report" ? (
+            <ReportsStepContent />
           ) : (
             <UnknownView caseId={caseId} />
           )

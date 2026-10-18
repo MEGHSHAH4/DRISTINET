@@ -26,7 +26,7 @@ export function HITLTaskCard({ task, isActive, onClick }: HITLTaskCardProps) {
       )}
     >
       <div className="flex items-start justify-between gap-3 mb-2.5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap min-w-0">
           <div
             className={cn(
               "flex h-7 w-7 items-center justify-center rounded",
@@ -53,8 +53,8 @@ export function HITLTaskCard({ task, isActive, onClick }: HITLTaskCardProps) {
             </Badge>
           )}
         </div>
-        <div className="text-micro font-mono text-text-muted shrink-0 text-right">
-           <span className="block">{new Date(task.createdAt).toLocaleDateString("en-IN")}</span>
+        <div className="text-micro font-mono text-text-muted shrink-0 text-right whitespace-nowrap">
+           <span className="block">{new Date(task.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
         </div>
       </div>
 

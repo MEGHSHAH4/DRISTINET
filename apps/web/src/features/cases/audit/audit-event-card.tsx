@@ -62,6 +62,14 @@ function formatDetailedTimestamp(isoStr: string) {
   );
 }
 
+function humanizeAction(action: string): string {
+  return action
+    .toLowerCase()
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
 function getActionConfig(action: AuditActionType): {
   label: string;
   tone: "neutral" | "blue" | "amber" | "orange" | "emerald" | "purple" | "red" | "gray";
@@ -69,35 +77,63 @@ function getActionConfig(action: AuditActionType): {
 } {
   switch (action) {
     case "CASE_VIEW":
+    case "DOCKET_OPENED":
       return { label: "Case opened", tone: "neutral", icon: FileText };
     case "VIEW_GRAPH":
+    case "GRAPH_VIEW":
       return { label: "Map opened", tone: "blue", icon: Network };
     case "FILTER_GRAPH":
-      return { label: "Graph Filtered", tone: "blue", icon: Filter };
+      return { label: "Map filtered", tone: "blue", icon: Filter };
     case "EXPAND_NODE":
-      return { label: "Node Expanded", tone: "blue", icon: GitBranch };
+    case "ENTITY_VIEW":
+    case "EDGE_VIEW":
+      return { label: "Item opened", tone: "blue", icon: GitBranch };
     case "VIEW_EVIDENCE":
-      return { label: "Evidence Inspected", tone: "emerald", icon: FileCheck };
+    case "EVIDENCE_VIEW":
+      return { label: "File opened", tone: "emerald", icon: FileCheck };
+    case "EVIDENCE_UPLOAD":
+      return { label: "File uploaded", tone: "emerald", icon: FilePlus };
+    case "EVIDENCE_DOWNLOAD":
+      return { label: "File downloaded", tone: "blue", icon: Download };
+    case "EVIDENCE_VERIFY":
+    case "EVIDENCE_PROCESS":
+    case "SCAN_RESULT":
+      return { label: "File checked", tone: "emerald", icon: ShieldCheck };
+    case "EVIDENCE_CONTEXT":
+      return { label: "File details viewed", tone: "neutral", icon: FileText };
     case "UPDATE_TIER":
-      return { label: "Tier Elevated", tone: "emerald", icon: Award };
+      return { label: "Tier changed", tone: "emerald", icon: Award };
     case "CREATE_NOTE":
-      return { label: "Note Created", tone: "purple", icon: FilePlus };
+      return { label: "Note added", tone: "purple", icon: FilePlus };
     case "UPDATE_NOTE":
-      return { label: "Note Updated", tone: "purple", icon: FileEdit };
+      return { label: "Note edited", tone: "purple", icon: FileEdit };
     case "DELETE_NOTE":
-      return { label: "Note Deleted", tone: "red", icon: Trash2 };
+      return { label: "Note deleted", tone: "red", icon: Trash2 };
     case "UNMASK":
-      return { label: "PII Unmasked", tone: "amber", icon: Eye };
+      return { label: "Hidden details shown", tone: "amber", icon: Eye };
     case "REVIEW_DECISION":
-      return { label: "HITL Reviewed", tone: "orange", icon: Scale };
+      return { label: "Match decided", tone: "orange", icon: Scale };
+    case "REVIEW_VIEW":
+    case "REVIEW_QUEUE":
+      return { label: "Review list opened", tone: "neutral", icon: FileText };
+    case "TIMELINE_VIEW":
+      return { label: "Timeline opened", tone: "blue", icon: FileText };
+    case "LOCATION_VIEW":
+      return { label: "Location opened", tone: "blue", icon: FileText };
+    case "INTEGRITY_VIEW":
+    case "INTEGRITY_PROOF":
+    case "INTEGRITY_ANCHOR":
+      return { label: "Safety check", tone: "emerald", icon: ShieldCheck };
+    case "AUDIT_VIEW":
+      return { label: "Activity log opened", tone: "neutral", icon: FileText };
     case "EXPORT":
-      return { label: "Dossier Exported", tone: "blue", icon: Download };
+      return { label: "Report exported", tone: "blue", icon: Download };
     case "LOGIN":
-      return { label: "User Login", tone: "neutral", icon: ShieldCheck };
+      return { label: "Signed in", tone: "neutral", icon: ShieldCheck };
     case "ACCESS_DENIED":
-      return { label: "Access Denied", tone: "red", icon: ShieldAlert };
+      return { label: "Access blocked", tone: "red", icon: ShieldAlert };
     default:
-      return { label: action, tone: "neutral", icon: FileText };
+      return { label: humanizeAction(action), tone: "neutral", icon: FileText };
   }
 }
 
@@ -120,7 +156,7 @@ export function AuditEventCard({
 
   const actionDescription =
     (log.detail.actionDescription as string) ||
-    `Recorded ${log.action} action on target ${log.target_id || log.target_kind || "SYSTEM"}`;
+    `${actionConfig.label} — ${log.target_id ? `ref ${log.target_id}` : "this case"}`;
 
   const maskedDescription = maskPhoneNumbersInText(actionDescription);
 
@@ -142,8 +178,13 @@ export function AuditEventCard({
   };
 
   const targetLink = getTargetLink();
-  const actorName = log.actor_id || "System";
-  const actorRole = log.actor_id ? "USER" : "SYSTEM";
+  // Never show raw internal user IDs — plain words only.
+  const actorName = !log.actor_id
+    ? "System"
+    : /^USR-[0-9a-f]+$/i.test(log.actor_id)
+      ? "Team member"
+      : log.actor_id;
+  const actorRole = log.actor_id ? "TEAM" : "SYSTEM";
 
   return (
     <div
@@ -161,8 +202,8 @@ export function AuditEventCard({
         <span className="text-micro font-mono text-text-muted">
           {formatDetailedTimestamp(log.created_at)}
         </span>
-        <span className="text-micro font-mono text-text-muted ml-auto flex items-center gap-1.5">
-          Trace:
+        <span className="text-micro text-text-muted ml-auto flex items-center gap-1.5">
+          Ref:
           <code className="text-[11px] font-mono text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded border border-border-subtle">
             {log.trace_id.slice(0, 8)}...
           </code>
@@ -184,39 +225,25 @@ export function AuditEventCard({
         {maskedDescription}
       </p>
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-micro text-text-muted font-mono">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-micro text-text-muted">
         <span className="text-text-secondary font-medium">
           {actorName}
         </span>
         <span>•</span>
-        <span>{actorRole}</span>
+        <span>{actorRole === "TEAM" ? "Team" : "System"}</span>
 
-        {log.target_kind && (
+        {targetLink && log.target_id && (
           <>
             <span>•</span>
-            <span className="text-text-secondary">
-              {log.target_kind}
-              {log.target_id && (
-                <>
-                  {" "}
-                  [
-                  {targetLink ? (
-                    <Link
-                      to={targetLink}
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-electric-blue hover:underline inline-flex items-center gap-0.5"
-                      title={`Open ${log.target_id} in context`}
-                    >
-                      {log.target_id}
-                      <ExternalLink className="h-2.5 w-2.5 inline" />
-                    </Link>
-                  ) : (
-                    log.target_id
-                  )}
-                  ]
-                </>
-              )}
-            </span>
+            <Link
+              to={targetLink}
+              onClick={(e) => e.stopPropagation()}
+              className="text-electric-blue hover:underline inline-flex items-center gap-0.5"
+              title="Open in context"
+            >
+              Open related item
+              <ExternalLink className="h-2.5 w-2.5 inline" />
+            </Link>
           </>
         )}
       </div>

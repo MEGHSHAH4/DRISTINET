@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import {
-  ListChecks,
   AlertTriangle,
   ArrowLeft,
-  Waypoints,
-  FileSpreadsheet,
   CheckCircle2,
   RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { StepHeader } from "@/components/ui/step-header";
 import { HITLQueueFilters } from "./hitl-queue-filters";
 import { HITLTaskCard } from "./hitl-task-card";
 import { HITLDecisionPane } from "./hitl-decision-pane";
 import { HITLEvidencePane } from "./hitl-evidence-pane";
 import { HITLDecisionDialog } from "./hitl-decision-dialog";
 import { ProvenanceViewer } from "@/components/evidence/ProvenanceViewer";
-import { InvestigationShell } from "@/layouts/InvestigationShell/investigation-shell";
-import { CaseStepNav } from "@/features/cases/components/case-step-nav";
 import { useHITLStore } from "@/stores/hitlStore";
 import type { HITLTaskDecision } from "@/types/hitl";
 import { cn } from "@/lib/utils";
 
-export function HITLWorkspacePage() {
+/**
+ * Step 2 content — rendered inside the shared case shell (CaseWorkspacePage),
+ * so the top bar, steps menu, case panel and footer are identical on every page.
+ */
+export function HITLStepContent() {
   const { taskId, caseId } = useParams<{ taskId?: string, caseId?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -85,76 +85,13 @@ export function HITLWorkspacePage() {
   };
 
   return (
-    <InvestigationShell
-      header={
-        <>
-          {/* Top Header Bar */}
-          <header className="flex h-auto min-h-14 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 py-3 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-amber/10 border border-amber/30 text-amber shrink-0">
-            <ListChecks className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-block rounded-full bg-electric-blue/10 border border-electric-blue/30 text-electric-blue text-[11px] font-bold px-2.5 py-0.5">
-                Step 2 of 4
-              </span>
-              <h1 className="text-sm font-semibold text-text-primary">
-                Review matches
-              </h1>
-            </div>
-            <p className="text-xs text-text-secondary mt-1 max-w-2xl leading-relaxed">
-              The system suggests things that might match — like two records for the same person.
-              Nothing is decided by itself: you look at the proof and choose <strong>Yes</strong>, <strong>No</strong>, or <strong>Later</strong>.
-            </p>
-          </div>
-        </div>
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
+      <StepHeader
+        step="Step 2 of 4"
+        title="Review matches"
+        whatItDoes="The system suggests things that might match — like two records for the same person. Nothing is decided by itself: you look at the proof and choose Yes, No, or Later."
+      />
 
-        {/* Action & Status Strip */}
-        <div className="flex items-center gap-2">
-          {activeTask ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleBackToQueue}
-              className="text-xs font-mono gap-1.5"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Back to Queue</span>
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link to={`/cases/${caseIdFilter}/graph`}>
-                <Button variant="ghost" size="sm" className="text-xs font-mono gap-1 text-text-secondary">
-                  <Waypoints className="h-3.5 w-3.5 text-electric-blue-soft" />
-                  <span>Connections map</span>
-                </Button>
-              </Link>
-              <Link to={`/cases/${caseIdFilter}`}>
-                <Button variant="ghost" size="sm" className="text-xs font-mono gap-1 text-text-secondary">
-                  <FileSpreadsheet className="h-3.5 w-3.5 text-verified-emerald" />
-                  <span>Start here</span>
-                </Button>
-              </Link>
-            </div>
-          )}
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => loadTasks()}
-            title="Refresh tasks"
-            className="h-8 w-8 text-text-muted hover:text-text-primary"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-          </Button>
-        </div>
-      </header>
-        </>
-      }
-      caseNav={<CaseStepNav />}
-      main={
-        <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Stats Ribbon — plain words */}
       <div className="flex items-center justify-between px-5 py-2 bg-surface-2 border-b border-border-subtle text-xs shrink-0 overflow-x-auto">
         <div className="flex items-center gap-4">
@@ -173,6 +110,28 @@ export function HITLWorkspacePage() {
           <span className="text-text-muted">
             Total: <strong className="text-text-primary">{stats?.totalTasks ?? tasks.length}</strong>
           </span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {activeTask && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleBackToQueue}
+              className="text-xs gap-1.5 h-7"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>Back to list</span>
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => loadTasks()}
+            title="Refresh list"
+            className="h-7 w-7 text-text-muted hover:text-text-primary"
+          >
+            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
+          </Button>
         </div>
       </div>
 
@@ -208,7 +167,7 @@ export function HITLWorkspacePage() {
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-16 space-y-2">
                 <div className="h-7 w-7 animate-spin rounded-full border-2 border-electric-blue border-t-transparent" />
-                <p className="text-xs font-mono text-text-muted">Loading arbitration queue...</p>
+                <p className="text-xs text-text-muted">Loading your review list...</p>
               </div>
             ) : tasks.length === 0 ? (
               <div className="rounded-md border border-dashed border-border-subtle bg-surface-1 p-12 text-center space-y-3">
@@ -217,7 +176,7 @@ export function HITLWorkspacePage() {
                 <p className="text-xs text-text-muted max-w-md mx-auto">
                   There are no matches waiting for your review right now. When new files are read, suggestions will appear here.
                 </p>
-                <Button variant="secondary" size="sm" onClick={resetFilter} className="text-xs font-mono">
+                <Button variant="secondary" size="sm" onClick={resetFilter} className="text-xs">
                   Reset filters
                 </Button>
               </div>
@@ -250,9 +209,6 @@ export function HITLWorkspacePage() {
 
       {/* Global Provenance Viewer Modal (available when clicking Full Inspector) */}
       <ProvenanceViewer />
-        </div>
-      }
-      footer={<></>}
-    />
+    </div>
   );
 }

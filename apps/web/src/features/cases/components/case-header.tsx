@@ -58,12 +58,14 @@ export function CaseHeader({ caseData, activeTab }: CaseHeaderProps) {
           </Button>
         )}
 
-        <Button asChild variant="secondary" size="sm" className="gap-1.5 text-xs h-8 px-2.5">
-          <Link to={`/cases/${caseData.id}/reports`}>
-            <FileDown className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Make report</span>
-          </Link>
-        </Button>
+        {activeTab !== "report" && (
+          <Button asChild variant="secondary" size="sm" className="gap-1.5 text-xs h-8 px-2.5">
+            <Link to={`/cases/${caseData.id}/reports`}>
+              <FileDown className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Make report</span>
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   );

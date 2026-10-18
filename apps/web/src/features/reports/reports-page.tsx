@@ -3,11 +3,13 @@ import { useState } from "react";
 import { Download, FileText, AlertTriangle, FileJson, FileCode2, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepHeader } from "@/components/ui/step-header";
-import { InvestigationShell } from "@/layouts/InvestigationShell/investigation-shell";
-import { CaseStepNav } from "@/features/cases/components/case-step-nav";
 import { generateCaseReport, generateCourtPdf } from "@/services/api/reportApi";
 
-export function ReportsPage() {
+/**
+ * Step 4 content — rendered inside the shared case shell (CaseWorkspacePage),
+ * so the top bar, steps menu, case panel and footer are identical on every page.
+ */
+export function ReportsStepContent() {
   const {  caseId } = useParams();
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error" | "unauthorized">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -79,6 +81,11 @@ export function ReportsPage() {
 
   const mainContent = (
     <div className="flex flex-col h-full bg-surface-base overflow-y-auto">
+      <StepHeader
+        step="Step 4 of 4"
+        title="Make report"
+        whatItDoes="Create a summary of what you reviewed and accepted. Only human-reviewed findings go into the report — nothing unreviewed."
+      />
       <div className="p-6 max-w-3xl mx-auto w-full mt-4 space-y-6">
         <div className="rounded-xl border border-border-subtle bg-surface-1 p-6 shadow-sm">
           <div className="flex items-start gap-4">
@@ -176,18 +183,5 @@ export function ReportsPage() {
     </div>
   );
 
-  return (
-    <InvestigationShell
-      header={
-        <StepHeader
-          step="Step 4 of 4"
-          title="Make report"
-          whatItDoes="Create a summary of what you reviewed and accepted. Only human-reviewed findings go into the report — nothing unreviewed."
-        />
-      }
-      caseNav={<CaseStepNav />}
-      main={mainContent}
-      footer={<></>}
-    />
-  );
+  return mainContent;
 }
