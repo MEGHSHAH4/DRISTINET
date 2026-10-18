@@ -14,21 +14,30 @@ const RELATIONSHIP_TYPE_CONFIG: Record<RelationshipType, { label: string; icon: 
 };
 
 interface RelationshipBadgeProps {
-  type: RelationshipType;
+  type: string;
   /** Contradictions must always be visible, never silently resolved (spec §18/§10). */
   hasContradiction?: boolean;
   className?: string;
 }
 
+/** Human-readable label for any relationship type, including ones outside the old 6-type list. */
+function humanizeType(type: string): string {
+  return type
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
 function RelationshipBadge({ type, hasContradiction = false, className }: RelationshipBadgeProps) {
-  const config = RELATIONSHIP_TYPE_CONFIG[type];
-  const Icon = config.icon;
+  const config = (RELATIONSHIP_TYPE_CONFIG as Record<string, { label: string; icon: typeof Phone }>)[type];
+  const Icon = config?.icon ?? ArrowLeftRight;
+  const label = config?.label ?? humanizeType(type);
 
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
       <Badge tone="neutral">
         <Icon className="h-3 w-3" aria-hidden="true" />
-        {config.label}
+        {label}
       </Badge>
       {hasContradiction && (
         <Tooltip>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { LayoutGrid, List, FilterX, RotateCcw, AlertCircle, HardDrive, ShieldCheck, FileCheck, Search, Radio, Landmark, Lock, Scale, AlertOctagon, UploadCloud } from "lucide-react";
 import { useEvidenceStore } from "@/stores/evidenceStore";
 import { Button } from "@/components/ui/button";
@@ -26,8 +27,9 @@ function plainStatus(raw: string): string {
 }
 
 export function CaseEvidenceView() {
+  const { caseId: routeCaseId } = useParams<{ caseId: string }>();
   const {
-    caseId,
+    caseId: storeCaseId,
     entityScope,
     evidence,
     isLoading,
@@ -39,6 +41,10 @@ export function CaseEvidenceView() {
     loadEvidence,
     getFilteredEvidence,
   } = useEvidenceStore();
+
+  // Prefer the URL param — the store's caseId can be empty on first render,
+  // which used to build an upload URL with a blank case ID.
+  const caseId = routeCaseId || storeCaseId || "";
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadMsg, setUploadMsg] = useState("");
@@ -150,7 +156,7 @@ export function CaseEvidenceView() {
           </div>
         </div>
 
-        <EvidenceFilterBar totalCount={evidence.length} filteredCount={filteredEvidence.length} />
+        {evidence.length > 0 && <EvidenceFilterBar totalCount={evidence.length} filteredCount={filteredEvidence.length} />}
 
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2 animate-pulse">
@@ -168,13 +174,13 @@ export function CaseEvidenceView() {
           </div>
         )}
 
-        {!isLoading && !error && filteredEvidence.length === 0 && (
+        {!isLoading && !error && evidence.length > 0 && filteredEvidence.length === 0 && (
           <div className="rounded-lg border border-border-subtle bg-surface-1/50 p-10 text-center space-y-3 my-8">
             <FilterX className="h-8 w-8 text-text-muted mx-auto" />
             <div className="space-y-1">
-              <h3 className="text-sm font-semibold text-text-primary">No files here yet</h3>
+              <h3 className="text-sm font-semibold text-text-primary">No files match your filters</h3>
               <p className="text-xs text-text-muted max-w-sm mx-auto">
-                Upload your first file above to start. If you uploaded but see nothing, try resetting the filters.
+                Try changing the search or resetting the filters below.
               </p>
             </div>
             <Button variant="secondary" size="sm" onClick={resetFilters} className="text-xs">Reset filters</Button>

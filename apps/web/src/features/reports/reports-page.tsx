@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Download, FileText, AlertTriangle, FileJson, FileCode2, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StepHeader } from "@/components/ui/step-header";
+import { InvestigationShell } from "@/layouts/InvestigationShell/investigation-shell";
+import { CaseStepNav } from "@/features/cases/components/case-step-nav";
 import { generateCaseReport, generateCourtPdf } from "@/services/api/reportApi";
 
 export function ReportsPage() {
@@ -75,14 +77,8 @@ export function ReportsPage() {
     }
   };
 
-  return (
+  const mainContent = (
     <div className="flex flex-col h-full bg-surface-base overflow-y-auto">
-      <StepHeader
-        step="Step 4 of 4"
-        title="Make report"
-        whatItDoes="Create a summary of what you reviewed and accepted. Only human-reviewed findings go into the report — nothing unreviewed."
-      />
-
       <div className="p-6 max-w-3xl mx-auto w-full mt-4 space-y-6">
         <div className="rounded-xl border border-border-subtle bg-surface-1 p-6 shadow-sm">
           <div className="flex items-start gap-4">
@@ -96,7 +92,7 @@ export function ReportsPage() {
                   A readable summary of the case: the people, phones and places found, how they may be linked, and the evidence behind each link.
                 </p>
               </div>
-              
+
               <div className="space-y-3 pt-2">
                 <label className="block text-sm font-semibold text-text-primary">
                   File type
@@ -105,9 +101,7 @@ export function ReportsPage() {
                   <button
                     type="button"
                     onClick={() => setFormat("html")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors ${
-                      format === "html" ? "border-electric-blue bg-electric-blue/10 text-electric-blue" : "border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary"
-                    }`}
+                    className={"flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors " + (format === "html" ? "border-electric-blue bg-electric-blue/10 text-electric-blue" : "border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary")}
                   >
                     <FileCode2 className="h-4 w-4" />
                     Web page
@@ -115,9 +109,7 @@ export function ReportsPage() {
                   <button
                     type="button"
                     onClick={() => setFormat("json")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors ${
-                      format === "json" ? "border-electric-blue bg-electric-blue/10 text-electric-blue" : "border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary"
-                    }`}
+                    className={"flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors " + (format === "json" ? "border-electric-blue bg-electric-blue/10 text-electric-blue" : "border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary")}
                   >
                     <FileJson className="h-4 w-4" />
                     Data file
@@ -129,7 +121,7 @@ export function ReportsPage() {
                 <label className="block text-sm font-semibold text-text-primary">
                   Your notes (optional)
                 </label>
-                <textarea 
+                <textarea
                   value={analystComments}
                   onChange={(e) => setAnalystComments(e.target.value)}
                   className="w-full bg-surface-2 border border-border-subtle rounded-md p-3 text-sm text-text-primary focus:outline-none focus:border-electric-blue"
@@ -137,10 +129,10 @@ export function ReportsPage() {
                   placeholder="Anything you want to add to the report…"
                 />
               </div>
-              
+
               <div className="pt-4 flex flex-wrap items-center gap-3">
-                <Button 
-                  variant="primary" 
+                <Button
+                  variant="primary"
                   onClick={handleGenerate}
                   disabled={status === "generating"}
                   className="gap-2"
@@ -148,9 +140,9 @@ export function ReportsPage() {
                   <Download className="h-4 w-4" />
                   {status === "generating" ? "Making report…" : "Download report"}
                 </Button>
-                
-                <Button 
-                  variant="secondary" 
+
+                <Button
+                  variant="secondary"
                   onClick={handleGeneratePdf}
                   disabled={status === "generating"}
                   className="gap-2 text-amber border-amber/30 hover:bg-amber/10"
@@ -168,7 +160,7 @@ export function ReportsPage() {
               {status === "unauthorized" && (
                 <div className="mt-4 p-3 bg-red-500/10 text-red-500 text-sm rounded-md border border-red-500/20 font-medium flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
-                  You don't have permission to make a report for this case.
+                  You don&apos;t have permission to make a report for this case.
                 </div>
               )}
               {status === "error" && (
@@ -182,5 +174,20 @@ export function ReportsPage() {
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <InvestigationShell
+      header={
+        <StepHeader
+          step="Step 4 of 4"
+          title="Make report"
+          whatItDoes="Create a summary of what you reviewed and accepted. Only human-reviewed findings go into the report — nothing unreviewed."
+        />
+      }
+      caseNav={<CaseStepNav />}
+      main={mainContent}
+      footer={<></>}
+    />
   );
 }

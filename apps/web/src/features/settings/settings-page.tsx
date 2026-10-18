@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ShieldCheck, HardDrive, FileTerminal, RotateCcw, LockKeyhole } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { StepHeader } from "@/components/ui/step-header";
 import { useAuthStore } from "@/stores/authStore";
 
 export function SettingsPage() {
@@ -10,29 +11,25 @@ export function SettingsPage() {
   const [resetMessage, setResetMessage] = useState<string | null>(null);
 
   const handleResetSession = () => {
-    setResetMessage("Demonstration session state refreshed to factory defaults.");
+    setResetMessage("Saved data cleared.");
     setTimeout(() => setResetMessage(null), 3000);
   };
 
   if (!user) return null;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto pb-20 lg:pb-6 space-y-6">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-xl font-bold font-mono tracking-tight text-text-primary flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-electric-blue" />
-            WORKSTATION SETTINGS & DIAGNOSTICS
-          </h1>
-          <p className="text-xs text-text-secondary mt-1">Configure local environment variables and system overrides</p>
-        </div>
-      </div>
+    <div className="flex h-full flex-col bg-bg-base">
+      <StepHeader
+        title="Settings"
+        whatItDoes="Your profile and local app options."
+      />
+      <div className="p-6 max-w-4xl mx-auto pb-20 lg:pb-6 space-y-6 w-full">
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-surface-1 border border-border-subtle rounded-lg overflow-hidden">
             <div className="border-b border-border-subtle bg-surface-2 px-4 py-2.5">
-              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">Current Operator Profile</h2>
+              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">Your profile</h2>
             </div>
             <div className="p-4 space-y-4">
               <div className="flex items-center gap-3">
@@ -60,24 +57,25 @@ export function SettingsPage() {
              <div className="border-b border-border-subtle bg-surface-2 px-4 py-2.5">
                <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary flex items-center gap-2">
                  <HardDrive className="h-3.5 w-3.5" />
-                 Local Storage Management
+                 Saved data on this device
                </h2>
              </div>
              <div className="p-4">
                <p className="text-sm text-text-secondary mb-4 leading-relaxed">
-                 DRISTI-NET caches graph representations and offline evidence slices locally to ensure workstation performance during bandwidth-degraded field operations.
+                 The app saves some data on this device so pages load faster. Clearing it is safe — it will be re-downloaded when needed.
                </p>
                
                <div className="flex gap-3">
                  <Button variant="secondary" onClick={handleResetSession} className="text-xs h-8">
                    <RotateCcw className="h-3.5 w-3.5 mr-2" />
-                   Clear Local Cache
+                   Clear saved data
                  </Button>
                </div>
                {resetMessage && <p className="text-verified-emerald text-xs mt-3 font-mono">{resetMessage}</p>}
              </div>
            </div>
         </div>
+      </div>
       </div>
     </div>
   );

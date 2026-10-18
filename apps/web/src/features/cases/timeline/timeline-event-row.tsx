@@ -2,6 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { Clock, FileText, Waypoints, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+/** "OBSERVED_AT" -> "Observed at" — plain words for relationship types. */
+function humanizeRelType(t: string): string {
+  return String(t || "")
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
 import type { TimelineEvent } from "@/types/timeline";
 import { useProvenanceStore } from "@/stores/provenanceStore";
 import { useGraphStore } from "@/stores/graphStore";
@@ -72,15 +80,15 @@ export function TimelineEventRow({
                 {event.time ? new Date(event.time).toLocaleTimeString("en-IN", {hour: "2-digit", minute: "2-digit"}) : "Undated"}
               </span>
               <span className="text-micro font-medium border px-1.5 rounded bg-surface-3">
-                {event.rel_type}
+                {humanizeRelType(event.rel_type)}
               </span>
               <span className="text-micro font-medium text-text-secondary border px-1.5 rounded">
-                Conf: {Math.round(event.confidence * 100)}%
+                {Math.round(event.confidence * 100)}% sure
               </span>
             </div>
 
             <h3 className="text-sm font-semibold text-text-primary tracking-tight">
-               {event.source.label} {event.rel_type.toLowerCase()} {event.target?.label}
+               {event.source.label} {humanizeRelType(event.rel_type).toLowerCase()} {event.target?.label}
             </h3>
           </div>
 
@@ -114,7 +122,7 @@ export function TimelineEventRow({
         <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-border-subtle/60 text-xs mt-2">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-micro font-semibold uppercase tracking-wider text-text-muted">
-              Entities:
+              Involves:
             </span>
             {[event.source.entity_id, event.target?.entity_id].filter(Boolean).map((entId) => {
               if (!entId) return null;
@@ -139,12 +147,7 @@ export function TimelineEventRow({
             })}
           </div>
 
-          {event.claim_id && (
-            <div className="flex items-center gap-1 text-micro font-mono text-text-muted border-l border-border-subtle pl-2">
-              <span>Claim ID:</span>
-              <span className="text-text-secondary">{event.claim_id}</span>
-            </div>
-          )}
+
         </div>
       </div>
     </div>

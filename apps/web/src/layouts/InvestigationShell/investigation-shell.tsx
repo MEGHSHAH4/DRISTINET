@@ -54,13 +54,13 @@ function InvestigationShell({
             "flex-1 min-h-0 min-w-0 w-full max-w-full grid overflow-hidden transition-all duration-150",
             detailPanel
               ? isDetailPanelCollapsed
-                ? "grid-cols-[150px_minmax(0,1fr)_44px] xl:grid-cols-[155px_minmax(0,1fr)_44px]"
-                : "grid-cols-[150px_minmax(0,1fr)_290px] xl:grid-cols-[155px_minmax(0,1fr)_300px]"
-              : "grid-cols-[150px_minmax(0,1fr)] xl:grid-cols-[155px_minmax(0,1fr)]",
+                ? "grid-cols-[200px_minmax(0,1fr)_44px] xl:grid-cols-[210px_minmax(0,1fr)_44px]"
+                : "grid-cols-[200px_minmax(0,1fr)_290px] xl:grid-cols-[210px_minmax(0,1fr)_300px]"
+              : "grid-cols-[200px_minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)]",
           )}
         >
           {/* Left: Case Navigation Tabs */}
-          <div className="border-r border-border-subtle bg-surface-1 overflow-y-auto overflow-x-hidden min-w-0 min-h-0 w-[150px] xl:w-[155px] max-w-[150px] xl:max-w-[155px]">
+          <div className="border-r border-border-subtle bg-surface-1 overflow-y-auto overflow-x-hidden min-w-0 min-h-0 w-[200px] xl:w-[210px] max-w-[200px] xl:max-w-[210px]">
             {caseNav}
           </div>
 

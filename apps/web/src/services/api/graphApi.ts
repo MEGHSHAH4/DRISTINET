@@ -28,11 +28,17 @@ export async function getCaseGraph(caseId: string): Promise<ApiResponse<CaseGrap
     isMasked: !!n.masked,
   }));
 
+  const humanize = (t: string) =>
+    String(t || "")
+      .split("_")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(" ");
+
   const mappedEdges = (rawData.edges || []).map((e: any, i: number) => ({
     id: `${e.source}-${e.target}-${e.rel_type}-${i}`,
     source: e.source,
     target: e.target,
-    label: e.rel_type,
+    label: humanize(e.rel_type),
     relationshipType: e.rel_type,
     count: e.count || 1,
     weight: e.weight || 1,
@@ -41,6 +47,7 @@ export async function getCaseGraph(caseId: string): Promise<ApiResponse<CaseGrap
     claimIds: e.claim_ids || [],
     firstSeen: e.first_seen || null,
     lastSeen: e.last_seen || null,
+    timestamp: e.first_seen || e.last_seen || null,
     relevance: e.relevance || "UNDATED",
     size: 2,
     color: "#9ca3af",

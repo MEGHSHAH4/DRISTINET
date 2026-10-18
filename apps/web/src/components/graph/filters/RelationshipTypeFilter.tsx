@@ -1,27 +1,27 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RelationshipBadge } from "@/components/intelligence/relationship-badge";
 import { useGraphStore } from "@/stores/graphStore";
-import type { RelationshipType } from "@/types/entity";
+import { cn } from "@/lib/utils";
 
-const RELATIONSHIP_TYPES: RelationshipType[] = [
-  "COMMUNICATED_WITH",
-  "TRANSFERRED_FUNDS",
-  "USED_DEVICE",
-  "USED_PHONE",
-  "CO_LOCATED_AT",
-  "ASSOCIATED_IN_CASE",
-];
+/** Plain-English labels for relationship types (API vocabulary + legacy names). */
+function humanizeRelType(type: string): string {
+  return type
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
 
 export function RelationshipTypeFilter() {
-  const { 
+  const {
     activeRelationshipTypes,
+    availableRelationshipTypes,
     toggleRelationshipType,
     selectAllRelationshipTypes,
     clearRelationshipTypes,
     edges,
   } = useGraphStore();
 
-  const getEdgeCountByType = (type: RelationshipType) => {
+  const getEdgeCountByType = (type: string) => {
     return edges.filter((e) => e.relationshipType === type).length;
   };
 
@@ -51,7 +51,7 @@ export function RelationshipTypeFilter() {
       </div>
 
       <div className="space-y-1.5">
-        {RELATIONSHIP_TYPES.map((type) => {
+        {availableRelationshipTypes.map((type) => {
           const isChecked = activeRelationshipTypes.has(type);
           const count = getEdgeCountByType(type);
 
@@ -66,7 +66,7 @@ export function RelationshipTypeFilter() {
                   id={`rel-filter-${type}`}
                   checked={isChecked}
                   onCheckedChange={() => toggleRelationshipType(type)}
-                  aria-label={`Filter by ${type}`}
+                  aria-label={`Filter by ${humanizeRelType(type)}`}
                 />
                 <RelationshipBadge type={type} />
               </div>
@@ -76,6 +76,9 @@ export function RelationshipTypeFilter() {
             </label>
           );
         })}
+        {availableRelationshipTypes.length === 0 && (
+          <p className={cn("text-xs text-text-muted")}>No connections loaded yet.</p>
+        )}
       </div>
     </div>
   );

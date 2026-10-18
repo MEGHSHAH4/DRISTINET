@@ -484,7 +484,7 @@ export class GraphEngine {
 
 
     // Filter by relationship type
-    const relType = attr.relationshipType as RelationshipType;
+    const relType = attr.relationshipType as string;
     if (this.filters.activeRelationshipTypes && !this.filters.activeRelationshipTypes.has(relType)) {
       return false;
     }

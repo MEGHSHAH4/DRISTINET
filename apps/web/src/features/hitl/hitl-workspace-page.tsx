@@ -16,6 +16,8 @@ import { HITLDecisionPane } from "./hitl-decision-pane";
 import { HITLEvidencePane } from "./hitl-evidence-pane";
 import { HITLDecisionDialog } from "./hitl-decision-dialog";
 import { ProvenanceViewer } from "@/components/evidence/ProvenanceViewer";
+import { InvestigationShell } from "@/layouts/InvestigationShell/investigation-shell";
+import { CaseStepNav } from "@/features/cases/components/case-step-nav";
 import { useHITLStore } from "@/stores/hitlStore";
 import type { HITLTaskDecision } from "@/types/hitl";
 import { cn } from "@/lib/utils";
@@ -83,9 +85,11 @@ export function HITLWorkspacePage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-background overflow-hidden">
-      {/* Top Header Bar */}
-      <header className="flex h-auto min-h-14 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 py-3 shrink-0">
+    <InvestigationShell
+      header={
+        <>
+          {/* Top Header Bar */}
+          <header className="flex h-auto min-h-14 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 py-3 shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded bg-amber/10 border border-amber/30 text-amber shrink-0">
             <ListChecks className="h-4 w-4" />
@@ -146,7 +150,11 @@ export function HITLWorkspacePage() {
           </Button>
         </div>
       </header>
-
+        </>
+      }
+      caseNav={<CaseStepNav />}
+      main={
+        <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Stats Ribbon — plain words */}
       <div className="flex items-center justify-between px-5 py-2 bg-surface-2 border-b border-border-subtle text-xs shrink-0 overflow-x-auto">
         <div className="flex items-center gap-4">
@@ -242,6 +250,9 @@ export function HITLWorkspacePage() {
 
       {/* Global Provenance Viewer Modal (available when clicking Full Inspector) */}
       <ProvenanceViewer />
-    </div>
+        </div>
+      }
+      footer={<></>}
+    />
   );
 }

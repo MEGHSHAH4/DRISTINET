@@ -24,7 +24,7 @@ export function PdfDocumentViewer({ record, className }: PdfDocumentViewerProps)
   const [zoom, setZoom] = useState(1.0);
   const [page] = useState(1);
   const [selectedBoxId, setSelectedBoxId] = useState<string | null>(
-    record.boundingBoxes[0]?.id || null,
+    (record.boundingBoxes || [])[0]?.id || null,
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -282,7 +282,7 @@ export function PdfDocumentViewer({ record, className }: PdfDocumentViewerProps)
 
           {/* Precision SVG Bounding Box Overlay */}
           <SvgBoundingBoxOverlay
-            boundingBoxes={record.boundingBoxes}
+            boundingBoxes={record.boundingBoxes || []}
             selectedBoxId={selectedBoxId}
             onSelectBox={(boxId) => setSelectedBoxId(boxId)}
           />

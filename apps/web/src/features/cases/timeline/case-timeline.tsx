@@ -83,30 +83,16 @@ export function CaseTimeline({ caseId }: CaseTimelineProps) {
 
   return (
     <div className="flex flex-col h-full w-full max-w-full min-w-0 bg-background overflow-hidden">
-      {/* Non-Technical Orientation Guide Bar */}
-      <div className="border-b border-border-subtle bg-surface-1 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-2 text-text-secondary">
-          <span className="font-semibold text-text-primary flex items-center gap-1.5">
-            <Clock className="h-4 w-4 text-teal-primary" />
-            Case Timeline:
-          </span>
-          <span>Chronological order of verified events &bull; Bank transfers, phone calls, and sightings</span>
-        </div>
-        <div className="text-micro text-text-muted hidden md:inline">
-          Click <strong>View Evidence</strong> on any event to inspect its original document.
-        </div>
-      </div>
-
       {/* Scrollable Container */}
       <div className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden p-4 space-y-4">
         {/* Timeline Header Banner */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3">
           <div className="space-y-0.5">
             <h2 className="text-base font-semibold text-text-primary tracking-tight">
-              Investigation Timeline &amp; Event Sequence
+              Timeline
             </h2>
             <p className="text-xs text-text-muted">
-              Step-by-step history of verified phone calls, cash transfers, and sightings across Jaipur, Mumbai, and Dubai.
+              Events in time order — calls, transfers, and sightings. Click <strong>View Evidence</strong> on any event to see its original document.
             </p>
           </div>
 

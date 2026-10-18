@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -19,7 +18,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  ChevronRight,
   Link2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -71,9 +69,9 @@ function getActionConfig(action: AuditActionType): {
 } {
   switch (action) {
     case "CASE_VIEW":
-      return { label: "Docket Opened", tone: "neutral", icon: FileText };
+      return { label: "Case opened", tone: "neutral", icon: FileText };
     case "VIEW_GRAPH":
-      return { label: "Graph Loaded", tone: "blue", icon: Network };
+      return { label: "Map opened", tone: "blue", icon: Network };
     case "FILTER_GRAPH":
       return { label: "Graph Filtered", tone: "blue", icon: Filter };
     case "EXPAND_NODE":
@@ -146,108 +144,81 @@ export function AuditEventCard({
   const targetLink = getTargetLink();
   const actorName = log.actor_id || "System";
   const actorRole = log.actor_id ? "USER" : "SYSTEM";
-  const ipAddress = "(No IP Logged)";
 
   return (
     <div
       onClick={() => onInspect(log)}
-      className="group relative flex flex-col md:flex-row md:items-center justify-between gap-3 rounded-lg border border-border-subtle bg-surface-1 p-3.5 hover:border-electric-blue/50 hover:bg-surface-2/60 transition-all cursor-pointer shadow-sm"
+      className="group relative flex flex-col gap-2.5 rounded-lg border border-border-subtle bg-surface-1 p-3.5 hover:border-electric-blue/50 hover:bg-surface-2/60 transition-all cursor-pointer shadow-sm"
     >
-      <div className="flex items-start gap-3 min-w-[200px]">
-        <div className="flex flex-col items-center">
-          <span className="font-mono text-xs font-bold text-electric-blue bg-electric-blue/10 border border-electric-blue/20 rounded px-1.5 py-0.5">
-            #{String(blockNumber).padStart(2, "0")}
-          </span>
-          <span className="font-mono text-[10px] text-text-muted mt-1">{log.audit_id}</span>
-        </div>
-
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-1.5">
-            <ActionIcon className="h-3.5 w-3.5 text-text-muted shrink-0" />
-            <Badge tone={actionConfig.tone} className="text-[10px] tracking-wider uppercase font-semibold">
-              {actionConfig.label}
-            </Badge>
-          </div>
-          <div className="text-micro font-mono text-text-muted">
-            {formatDetailedTimestamp(log.created_at)}
-          </div>
-        </div>
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <span className="font-mono text-xs font-bold text-electric-blue bg-electric-blue/10 border border-electric-blue/20 rounded px-1.5 py-0.5 shrink-0">
+          #{String(blockNumber).padStart(2, "0")}
+        </span>
+        <ActionIcon className="h-3.5 w-3.5 text-text-muted shrink-0" />
+        <Badge tone={actionConfig.tone} className="text-[10px] tracking-wider uppercase font-semibold shrink-0">
+          {actionConfig.label}
+        </Badge>
+        <span className="text-micro font-mono text-text-muted">
+          {formatDetailedTimestamp(log.created_at)}
+        </span>
+        <span className="text-micro font-mono text-text-muted ml-auto flex items-center gap-1.5">
+          Trace:
+          <code className="text-[11px] font-mono text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded border border-border-subtle">
+            {log.trace_id.slice(0, 8)}...
+          </code>
+          <button
+            type="button"
+            onClick={handleCopyHash}
+            className="text-text-muted hover:text-electric-blue p-0.5"
+          >
+            {copiedHash ? (
+              <Check className="h-3 w-3 text-emerald-400" />
+            ) : (
+              <Copy className="h-3 w-3" />
+            )}
+          </button>
+        </span>
       </div>
 
-      <div className="flex-1 space-y-1.5 md:px-3">
-        <p className="text-xs text-text-primary leading-relaxed font-sans">
-          {maskedDescription}
-        </p>
+      <p className="text-xs text-text-primary leading-relaxed font-sans">
+        {maskedDescription}
+      </p>
 
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-micro text-text-muted font-mono">
-          <span className="text-text-secondary font-medium">
-            {actorName}
-          </span>
-          <span>•</span>
-          <span>{actorRole}</span>
-          <span>•</span>
-          <span>IP: {ipAddress}</span>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-micro text-text-muted font-mono">
+        <span className="text-text-secondary font-medium">
+          {actorName}
+        </span>
+        <span>•</span>
+        <span>{actorRole}</span>
 
-          {log.target_kind && (
-            <>
-              <span>•</span>
-              <span className="text-text-secondary">
-                Scope: <span className="text-text-primary">{log.target_kind}</span>
-                {log.target_id && (
-                  <>
-                    {" "}
-                    [
-                    {targetLink ? (
-                      <Link
-                        to={targetLink}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-electric-blue hover:underline inline-flex items-center gap-0.5"
-                        title={`Open ${log.target_id} in context`}
-                      >
-                        {log.target_id}
-                        <ExternalLink className="h-2.5 w-2.5 inline" />
-                      </Link>
-                    ) : (
-                      log.target_id
-                    )}
-                    ]
-                  </>
-                )}
-              </span>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between md:justify-end gap-3 min-w-[220px] pt-2 md:pt-0 border-t md:border-t-0 border-border-subtle/50">
-        <div className="space-y-1 text-right">
-          <div className="flex items-center justify-end gap-1.5">
-            <span className="text-[10px] uppercase font-mono text-text-muted">Trace:</span>
-            <code className="text-[11px] font-mono text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded border border-border-subtle">
-              {log.trace_id.slice(0, 8)}...
-            </code>
-            <button
-              type="button"
-              onClick={handleCopyHash}
-              className="text-text-muted hover:text-electric-blue p-0.5"
-            >
-              {copiedHash ? (
-                <Check className="h-3 w-3 text-emerald-400" />
-              ) : (
-                <Copy className="h-3 w-3" />
+        {log.target_kind && (
+          <>
+            <span>•</span>
+            <span className="text-text-secondary">
+              {log.target_kind}
+              {log.target_id && (
+                <>
+                  {" "}
+                  [
+                  {targetLink ? (
+                    <Link
+                      to={targetLink}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-electric-blue hover:underline inline-flex items-center gap-0.5"
+                      title={`Open ${log.target_id} in context`}
+                    >
+                      {log.target_id}
+                      <ExternalLink className="h-2.5 w-2.5 inline" />
+                    </Link>
+                  ) : (
+                    log.target_id
+                  )}
+                  ]
+                </>
               )}
-            </button>
-          </div>
-        </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-text-muted group-hover:text-electric-blue group-hover:translate-x-0.5 transition-transform p-1 h-7 w-7"
-          title="Inspect full audit record"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

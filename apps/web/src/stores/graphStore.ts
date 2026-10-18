@@ -27,7 +27,10 @@ interface GraphState {
 
   activeTiers: Set<EvidenceTier>;
   activeEntityTypes: Set<EntityType>;
-  activeRelationshipTypes: Set<RelationshipType>;
+  /** Relationship types are data-driven (the API's POLE+ vocabulary, e.g. USES_PHONE),
+      not the old hardcoded 6-type list — synced from loaded edges in loadGraph. */
+  activeRelationshipTypes: Set<string>;
+  availableRelationshipTypes: string[];
   onlyContradictions: boolean;
   minConfidence: number;
   dateRange: [number, number];
@@ -57,7 +60,7 @@ interface GraphState {
   toggleEntityType: (type: EntityType) => void;
   selectAllEntityTypes: () => void;
   clearEntityTypes: () => void;
-  toggleRelationshipType: (type: RelationshipType) => void;
+  toggleRelationshipType: (type: string) => void;
   selectAllRelationshipTypes: () => void;
   clearRelationshipTypes: () => void;
   setOnlyContradictions: (enabled: boolean) => void;
@@ -111,7 +114,8 @@ export const useGraphStore = create<GraphState>((set, get) => ({
 
   activeTiers: new Set(DEFAULT_TIERS),
   activeEntityTypes: new Set(ALL_ENTITY_TYPES),
-  activeRelationshipTypes: new Set(ALL_RELATIONSHIP_TYPES),
+  activeRelationshipTypes: new Set<string>(ALL_RELATIONSHIP_TYPES),
+  availableRelationshipTypes: [...ALL_RELATIONSHIP_TYPES],
   onlyContradictions: false,
   minConfidence: 0,
   dateRange: [INITIAL_MIN_TIME, INITIAL_MAX_TIME],
@@ -137,6 +141,10 @@ export const useGraphStore = create<GraphState>((set, get) => ({
       const minT = edgeTimes.length > 0 ? Math.min(...edgeTimes) : INITIAL_MIN_TIME;
       const maxT = edgeTimes.length > 0 ? Math.max(...edgeTimes) : INITIAL_MAX_TIME;
 
+      // Sync the relationship-type filter with the types actually in the data.
+      // (The old hardcoded 6-type list didn't match the API vocabulary, which hid every edge.)
+      const typesInData = Array.from(new Set(edges.map((e) => e.relationshipType).filter(Boolean))).sort();
+
       set({
         caseId,
         caseTitle,
@@ -146,6 +154,8 @@ export const useGraphStore = create<GraphState>((set, get) => ({
         maxTimestamp: maxT,
         currentTimestamp: maxT,
         dateRange: [minT, maxT],
+        activeRelationshipTypes: new Set<string>(typesInData),
+        availableRelationshipTypes: typesInData,
         isLoading: false,
       });
     } catch (err: unknown) {
@@ -266,9 +276,9 @@ export const useGraphStore = create<GraphState>((set, get) => ({
     }),
 
   selectAllRelationshipTypes: () =>
-    set({ activeRelationshipTypes: new Set(ALL_RELATIONSHIP_TYPES) }),
+    set((state) => ({ activeRelationshipTypes: new Set<string>(state.availableRelationshipTypes) })),
   clearRelationshipTypes: () =>
-    set({ activeRelationshipTypes: new Set(["COMMUNICATED_WITH"]) }),
+    set({ activeRelationshipTypes: new Set<string>() }),
 
   setOnlyContradictions: (only) => set({ onlyContradictions: only }),
   setMinConfidence: (conf) => set({ minConfidence: conf }),
@@ -279,11 +289,11 @@ export const useGraphStore = create<GraphState>((set, get) => ({
   setFilterPanelOpen: (open) => set({ isFilterPanelOpen: open }),
 
   resetFilters: () => {
-    const {  minTimestamp, maxTimestamp } = get();
+    const {  minTimestamp, maxTimestamp, availableRelationshipTypes } = get();
     set({
       activeTiers: new Set(DEFAULT_TIERS),
       activeEntityTypes: new Set(ALL_ENTITY_TYPES),
-      activeRelationshipTypes: new Set(ALL_RELATIONSHIP_TYPES),
+      activeRelationshipTypes: new Set<string>(availableRelationshipTypes),
       onlyContradictions: false,
       minConfidence: 0,
       searchTerm: "",

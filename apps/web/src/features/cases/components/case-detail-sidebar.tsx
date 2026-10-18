@@ -54,84 +54,30 @@ export function CaseDetailSidebar({ caseData, isCollapsed, onToggleCollapse }: C
 
       <div className="w-full max-w-full min-w-0 overflow-x-hidden overflow-y-auto p-3.5 space-y-4 text-xs flex-1">
         
-        {/* Owner */}
-        <div className="space-y-1.5 min-w-0">
+        {/* Case facts — plain language, no internal IDs */}
+        <div className="p-3 rounded-lg border border-border-subtle bg-surface-2 space-y-2 min-w-0 overflow-hidden">
           <div className="flex items-center gap-1.5 text-text-muted">
             <UserCheck className="h-3.5 w-3.5 text-electric-blue-soft shrink-0" />
             <span className="text-micro font-semibold uppercase tracking-wider truncate">
-              Case Owner
+              About this case
             </span>
           </div>
-
-          <div className="p-3 rounded-lg border border-border-subtle bg-surface-2 space-y-1 min-w-0 overflow-hidden">
-            <div className="flex items-center justify-between gap-2 min-w-0">
-              <span className="font-semibold text-text-primary text-sm truncate">
-                {caseData.owner_id}
-              </span>
-            </div>
-            <p className="text-text-secondary truncate">Owner / Lead</p>
-          </div>
+          <p className="text-xs text-text-primary leading-relaxed">{caseData.title}</p>
+          <p className="text-micro text-text-muted">{caseData.assigned.length} team members have access</p>
         </div>
 
-        {/* Investigation Team */}
-        <div className="space-y-1.5 min-w-0">
-          <div className="flex items-center gap-1.5 text-text-muted">
-            <span className="text-micro font-semibold uppercase tracking-wider truncate">
-              Assigned Access ({caseData.assigned.length})
-            </span>
+        <div className="p-3 rounded-lg border border-border-subtle bg-surface-2 space-y-1.5 min-w-0 overflow-hidden text-micro">
+          <div className="flex justify-between gap-2">
+            <span className="text-text-muted">Reference</span>
+            <span className="font-mono text-text-primary text-right break-all">{caseData.authority_reference}</span>
           </div>
-
-          <div className="divide-y divide-border-subtle/50 rounded-lg border border-border-subtle bg-surface-2 overflow-hidden">
-            {caseData.assigned.map((memberId) => (
-              <div key={memberId} className="p-2.5 flex items-center justify-between gap-2 min-w-0">
-                <span className="font-mono text-micro text-text-primary shrink-0 ml-1">
-                  {memberId}
-                </span>
-              </div>
-            ))}
+          <div className="flex justify-between gap-2">
+            <span className="text-text-muted">Area</span>
+            <span className="text-text-primary text-right">{caseData.jurisdiction}</span>
           </div>
-        </div>
-
-        {/* Docket & Jurisdiction Details */}
-        <div className="space-y-1.5 min-w-0">
-          <div className="flex items-center gap-1.5 text-text-muted">
-            <Building2 className="h-3.5 w-3.5 text-electric-blue-soft shrink-0" />
-            <span className="text-micro font-semibold uppercase tracking-wider truncate">
-              Docket &amp; Jurisdiction
-            </span>
-          </div>
-
-          <div className="p-3 rounded-lg border border-border-subtle bg-surface-2 space-y-2 min-w-0 overflow-hidden">
-            <div className="min-w-0">
-              <span className="text-micro text-text-muted">Authority Reference</span>
-              <p
-                className="font-mono text-text-primary mt-0.5 break-all"
-                style={{ overflowWrap: "anywhere" }}
-              >
-                {caseData.authority_reference}
-              </p>
-            </div>
-
-            <div className="min-w-0">
-              <span className="text-micro text-text-muted">Jurisdiction Unit</span>
-              <p
-                className="font-mono text-electric-blue-soft mt-0.5"
-                style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-              >
-                {caseData.jurisdiction}
-              </p>
-            </div>
-
-            <div className="pt-2 border-t border-border-subtle grid grid-cols-1 gap-2 text-micro min-w-0">
-              <div className="min-w-0">
-                <span className="text-text-muted flex items-center gap-1 truncate">
-                  <Clock className="h-3 w-3 shrink-0" /> Registered
-                </span>
-                <span className="font-mono text-text-secondary mt-0.5 block truncate">
-                  {new Date(caseData.opened_at).toLocaleDateString("en-IN")}
-                </span>
-              </div>
-            </div>
+          <div className="flex justify-between gap-2">
+            <span className="text-text-muted">Opened</span>
+            <span className="text-text-primary text-right">{new Date(caseData.opened_at).toLocaleDateString("en-IN")}</span>
           </div>
         </div>
 
@@ -140,10 +86,10 @@ export function CaseDetailSidebar({ caseData, isCollapsed, onToggleCollapse }: C
           <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
           <div className="min-w-0">
             <span className="font-medium text-text-primary block truncate">
-              Controlled Case File
+              Private case file
             </span>
             <p className="text-micro text-text-muted leading-relaxed mt-0.5">
-              Assigned users only. Access attempts are fully logged and audited.
+              Only your team can open this. Every view is recorded.
             </p>
           </div>
         </div>

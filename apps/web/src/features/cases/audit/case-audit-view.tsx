@@ -133,9 +133,8 @@ export function CaseAuditView({ caseId }: CaseAuditViewProps) {
         {/* Ledger Event Cards List */}
         {!isLoading && !error && filteredLogs.length > 0 && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between px-1 text-micro text-text-muted font-mono uppercase tracking-wider">
-              <span>Displaying {filteredLogs.length} of {logs.length} Blocks</span>
-              <span>Sequence Linked</span>
+            <div className="flex items-center justify-between px-1 text-micro text-text-muted">
+              <span>Showing {filteredLogs.length} of {logs.length} entries</span>
             </div>
 
             {filteredLogs.map((log) => {

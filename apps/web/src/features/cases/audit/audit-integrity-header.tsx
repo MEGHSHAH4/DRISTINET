@@ -38,21 +38,21 @@ export function AuditIntegrityHeader({ caseId }: AuditIntegrityHeaderProps) {
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold text-text-primary tracking-tight flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-emerald-500" />
-            Case Audit Ledger
+            Activity log
           </h2>
           <Badge tone="emerald" className="text-micro font-mono">
             LIVE
           </Badge>
         </div>
         <p className="text-xs text-text-secondary max-w-xl leading-relaxed">
-          Permanent chronological log of all interactions and data state changes within Case {caseId}.
+          Every action in this case, in order — uploads, reviews, exports. {totalEvents} entries so far.
         </p>
       </div>
 
       <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
         <div className="bg-surface-2 border border-border-subtle rounded-md px-3 py-1.5 flex flex-col justify-center items-end mr-2">
           <span className="text-micro font-mono text-text-muted uppercase tracking-wider">
-            Total Records
+            Entries
           </span>
           <span className="text-sm font-semibold font-mono text-text-primary">
             {totalEvents}

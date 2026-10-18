@@ -119,8 +119,8 @@ function StepRow({ step, caseId }: { step: StepDef; caseId: string }) {
         ) : (
           <Icon className={cn("h-4 w-4 shrink-0 mt-0.5", active ? "text-electric-blue" : "text-text-muted")} />
         )}
-        <span className="min-w-0">
-          <span className={cn("block text-xs font-semibold truncate", active ? "text-electric-blue" : "text-text-primary")}>
+        <span className="min-w-0 flex-1">
+          <span className={cn("block text-xs font-semibold leading-snug", active ? "text-electric-blue" : "text-text-primary")}>
             {step.label}
           </span>
           <span className="block text-[11px] text-text-muted leading-snug mt-0.5">{step.hint}</span>
@@ -142,8 +142,8 @@ export function CaseStepNav() {
 
   return (
     <nav className="p-2 min-w-0 select-none" aria-label="Case steps">
-      <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-text-muted truncate">
-        Work through the steps
+      <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+        Steps
       </div>
       <ul className="flex flex-col gap-0.5 mt-1">
         {STEPS.map((s) => (

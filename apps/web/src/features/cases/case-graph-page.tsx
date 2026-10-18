@@ -84,18 +84,9 @@ export function CaseGraphPage() {
                   title={showCoreConnectionsOnly ? "Show every connection" : "Show only the key connections"}
                 >
                   <Eye className="h-3.5 w-3.5" />
-                  <span>
-                    {showCoreConnectionsOnly
-                      ? "Show all connections"
-                      : "Show key connections only"}
+                  <span className="whitespace-nowrap">
+                    {showCoreConnectionsOnly ? "Show all" : "Key connections"}
                   </span>
-                </Button>
-
-                <Button asChild variant="secondary" size="sm" className="gap-1.5 text-xs">
-                  <Link to={`/cases/${caseId}`}>
-                    <Layers className="h-3.5 w-3.5 text-text-muted" />
-                    <span className="hidden sm:inline">Start here</span>
-                  </Link>
                 </Button>
 
                 <Button
@@ -154,14 +145,10 @@ export function CaseGraphPage() {
           </div>
         }
         detailPanel={
-          isDrawerOpen ? (
-            selectedNodeId ? (
-              <EntityDrawer />
-            ) : selectedEdgeId ? (
-              <EdgeDrawer />
-            ) : (
-              <EmptyDrawer />
-            )
+          selectedNodeId ? (
+            <EntityDrawer />
+          ) : selectedEdgeId ? (
+            <EdgeDrawer />
           ) : undefined
         }
         footer={<TemporalSlider />}

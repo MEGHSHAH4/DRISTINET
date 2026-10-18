@@ -62,14 +62,14 @@ export function HITLDecisionPane({
               <span>{task.title}</span>
             </h2>
             <p className="text-micro font-mono text-text-muted truncate uppercase">
-              Task ID: {task.id} &bull; Pipeline Phase 4
+              Reference: {task.id}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 mt-2">
           <Badge tone={task.flagManualReview ? "amber" : "neutral"} className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0">
-            {task.flagManualReview ? "MANDATORY REVIEW" : "OPTIONAL AUDIT"}
+            {task.flagManualReview ? "NEEDS YOUR DECISION" : "OPTIONAL CHECK"}
           </Badge>
           <Badge tone={task.status === "PENDING" ? "blue" : (task.status === "APPROVED" ? "emerald" : "neutral")} className="text-[10px] font-mono uppercase px-1.5 py-0">
             {task.status.replace("_", " ")}

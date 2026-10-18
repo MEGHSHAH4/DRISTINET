@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Clock, FileWarning, Search, ShieldAlert, Waypoints } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { StepHeader } from "@/components/ui/step-header";
 import { cn } from "@/lib/utils";
 import type { CaseSummary } from "@/types/case";
 import { listCases } from "@/services/api/casesApi";
@@ -40,19 +41,10 @@ export function CasesDirectoryPage() {
 
   return (
     <div className="flex h-full flex-col bg-bg-base">
-      <div className="flex shrink-0 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 py-3.5">
-        <div className="flex items-center gap-2">
-          <FileWarning className="h-4 w-4 text-electric-blue-soft" />
-          <h2 className="text-sm font-bold font-mono tracking-wide uppercase text-text-primary">
-            Active Investigations Directory
-          </h2>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-text-muted font-medium text-xs">Portfolio Status:</span>
-          <span className="text-text-primary font-semibold text-xs">Total Cases: {cases.length}</span>
-        </div>
-      </div>
+      <StepHeader
+        title="Cases"
+        whatItDoes="All your investigations in one place. Open one to work through the 4 steps."
+      />
 
       <div className="flex-1 min-h-0 overflow-y-auto p-4 max-w-7xl mx-auto w-full space-y-4">
         <div className="flex items-center gap-3 rounded-md border border-border-subtle bg-surface-1 p-3">
@@ -85,11 +77,7 @@ export function CasesDirectoryPage() {
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-mono text-sm font-semibold text-text-primary">{c.id}</span>
-                    <Badge tone="blue" className="text-micro font-mono">
-                      {c.classification}
-                    </Badge>
-                    <span className="text-micro font-mono text-text-muted">&bull;</span>
-                    <span className="text-micro font-mono text-text-secondary">{c.jurisdiction}</span>
+                    <span className="text-micro text-text-secondary">{c.jurisdiction}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5 text-micro font-mono text-text-muted">
@@ -103,41 +91,34 @@ export function CasesDirectoryPage() {
                   <p className="text-xs text-text-secondary leading-relaxed mt-1">{c.purpose}</p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-2 p-3 bg-surface-2 rounded-md border border-border-subtle text-center text-xs font-mono">
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-2 p-3 bg-surface-2 rounded-md border border-border-subtle text-center text-xs">
                   <div className="space-y-0.5">
-                    <span className="text-micro text-text-muted uppercase">Evidence Docs</span>
+                    <span className="text-micro text-text-muted">Files</span>
                     <p className="font-semibold text-text-primary">{c.evidence_count}</p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-micro text-text-muted uppercase">Pending Reviews</span>
+                    <span className="text-micro text-text-muted">To review</span>
                     <p className="font-semibold text-text-primary">{c.pending_reviews}</p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-micro text-text-muted uppercase">Assigned Users</span>
+                    <span className="text-micro text-text-muted">Team</span>
                     <p className="font-semibold text-text-primary">{c.assigned.length}</p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-micro text-text-muted uppercase">Authority Ref</span>
+                    <span className="text-micro text-text-muted">Reference</span>
                     <p className="font-semibold text-text-primary truncate" title={c.authority_reference}>{c.authority_reference}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-border-subtle/80 flex-wrap gap-2">
-                  <div className="flex items-center gap-2 text-micro font-mono text-text-muted">
-                    <ShieldAlert className="h-3.5 w-3.5 text-electric-blue-soft" />
-                    <span>Owner: <strong>{c.owner_id}</strong></span>
+                  <div className="flex items-center gap-2 text-micro text-text-muted">
+                    <span>Opened: {new Date(c.opened_at).toLocaleDateString("en-IN")}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Link to={`/cases/${c.id}/graph`}>
-                      <Button variant="ghost" size="sm" className="h-8 text-xs font-mono gap-1 text-text-secondary">
-                        <Waypoints className="h-3.5 w-3.5 text-electric-blue-soft" />
-                        <span>Graph</span>
-                      </Button>
-                    </Link>
                     <Link to={`/cases/${c.id}`}>
-                      <Button variant="primary" size="sm" className="h-8 text-xs font-mono gap-1.5 shadow-panel">
-                        <span>Open Case Workspace</span>
+                      <Button variant="primary" size="sm" className="h-8 text-xs gap-1.5 shadow-panel">
+                        <span>Open case — start with step 1</span>
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
                     </Link>

@@ -49,7 +49,7 @@ export function HITLTaskCard({ task, isActive, onClick }: HITLTaskCardProps) {
           {task.flagManualReview && !isResolved && (
             <Badge tone="amber" className="text-[10px] font-mono px-1.5 py-0 uppercase flex items-center gap-1">
               <Flag className="h-2.5 w-2.5" />
-              MANDATORY
+              NEEDS DECISION
             </Badge>
           )}
         </div>

@@ -35,7 +35,35 @@ export function HITLEvidencePane({ task }: HITLEvidencePaneProps) {
           // In a fully integrated backend, this fetches the evidence record linked to the candidate
           const evidenceRes = await getEvidenceById(task.primaryEvidenceId);
           if (evidenceRes.data) {
-             matched = { id: evidenceRes.data.id, caseId: evidenceRes.data.caseId, sourceId: evidenceRes.data.id, sourceName: evidenceRes.data.filename, extractionMethod: evidenceRes.data.sourceType, confidenceScore: 0.9, rawExtractedText: "", parsedData: {}, extractedAt: evidenceRes.data.createdAt, verifiedBy: evidenceRes.data.uploadedBy, status: "VERIFIED" };
+            const ev: any = evidenceRes.data;
+            const eid: string = ev.evidence_id ?? ev.id ?? task.primaryEvidenceId;
+            const fname: string = ev.filename ?? "Evidence file";
+            const when: string = ev.created_at ?? new Date().toISOString();
+            // Build a complete record — the pane renders sha256Hash, documentTitle,
+            // evidenceTier, documentType, sourceAgency and ingestedAt, so every one
+            // of them must be present (missing fields used to crash this pane).
+            matched = {
+              id: eid,
+              recordId: eid,
+              caseId: ev.case_id ?? task.caseId ?? "",
+              sourceId: eid,
+              sourceName: fname,
+              documentTitle: fname,
+              documentType: "FIR_EXCERPT",
+              evidenceTier: 3,
+              extractionMethod: ev.detected_type ?? ev.source_label ?? "upload",
+              confidenceScore: 0.9,
+              rawExtractedText: "",
+              parsedData: {},
+              extractedAt: when,
+              ingestedAt: when,
+              verifiedBy: ev.uploaded_by ?? "system",
+              sourceAgency: ev.source_label ?? "upload",
+              sha256Hash: ev.sha256 ?? "",
+              rawArtifactId: eid,
+              boundingBoxes: [],
+              status: "VERIFIED",
+            };
           }
         }
 
@@ -81,28 +109,25 @@ export function HITLEvidencePane({ task }: HITLEvidencePaneProps) {
   return (
     <div className="flex flex-col h-full bg-surface-2 overflow-hidden">
       {/* Evidence Pane Header */}
-      <div className="flex h-12 items-center justify-between px-4 bg-surface-1 border-b border-border-subtle shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex h-12 items-center justify-between px-4 bg-surface-1 border-b border-border-subtle shrink-0 gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <FileText className="h-4 w-4 text-electric-blue-soft shrink-0" />
           <span className="text-xs font-semibold text-text-primary truncate">
             {maskPhoneNumbersInText(record.documentTitle)}
           </span>
           <EvidenceTierBadge tier={record.evidenceTier} className="shrink-0" />
-          <Badge tone="gray" className="text-micro font-mono shrink-0">
-            {record.documentType}
-          </Badge>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 text-micro font-mono text-electric-blue-soft hover:text-text-primary px-2 gap-1"
+            className="h-7 text-micro font-mono text-electric-blue-soft hover:text-text-primary px-2 gap-1 whitespace-nowrap"
             onClick={() => openProvenanceForRecord(record.recordId)}
-            title="Expand in full-screen modal forensic viewer"
+            title="Open full-screen document viewer"
           >
             <ExternalLink className="h-3 w-3" />
-            <span>Full Inspector</span>
+            <span>Full view</span>
           </Button>
         </div>
       </div>
@@ -118,8 +143,8 @@ export function HITLEvidencePane({ task }: HITLEvidencePaneProps) {
           <div className="flex items-center gap-1.5 font-mono text-text-muted">
             <Hash className="h-3 w-3 text-verified-emerald" />
             <span>SHA-256:</span>
-            <span className="text-text-secondary truncate max-w-[200px]" title={record.sha256Hash}>
-              {record.sha256Hash.substring(0, 16)}...
+            <span className="text-text-secondary truncate max-w-[200px]" title={record.sha256Hash || undefined}>
+              {(record.sha256Hash || "").substring(0, 16)}...
             </span>
           </div>
 
