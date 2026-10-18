@@ -13,12 +13,12 @@ export interface NavItem {
 }
 
 export const PRIMARY_NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", path: "/command-center", icon: Home, tooltip: "Overview & active cases" },
-  { label: "Case Directory", path: "/cases", icon: FileStack, tooltip: "View all active investigations" },
+  { label: "Home", path: "/command-center", icon: Home, tooltip: "Your cases and how the 4 steps work" },
+  { label: "Cases", path: "/cases", icon: FileStack, tooltip: "All cases assigned to you" },
 ];
 
 export const SYSTEM_NAV_ITEMS: NavItem[] = [
-  { label: "Settings", path: "/settings", icon: Settings, tooltip: "Preferences and security settings" },
+  { label: "Settings", path: "/settings", icon: Settings, tooltip: "Your preferences" },
 ];
 
 export const ALL_NAV_ITEMS: NavItem[] = [...PRIMARY_NAV_ITEMS, ...SYSTEM_NAV_ITEMS];

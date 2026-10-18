@@ -107,10 +107,10 @@ export function HITLDecisionPane({
           <div className="rounded-lg border border-border-strong bg-surface-2 p-4 space-y-5 shadow-sm">
             <div className="space-y-1.5 border-b border-border-subtle pb-4">
               <h3 className="text-xs font-semibold text-text-primary uppercase tracking-wider">
-                1. Select Supervisory Action
+                1. Your decision
               </h3>
               <p className="text-xs text-text-muted">
-                Your decision will be immutably recorded in the case audit log.
+                Look at the proof on the right, then choose. Your choice is saved in the activity log.
               </p>
               
               <div className="grid grid-cols-2 gap-2 mt-3 pt-1">
@@ -121,7 +121,7 @@ export function HITLDecisionPane({
                   className="justify-start text-xs font-mono"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-verified-emerald" />
-                  Approve Merge
+                  Yes, it's a match
                 </Button>
                 <Button
                   variant={selectedAction === "REJECT_MERGE" ? "primary" : "secondary"}
@@ -130,7 +130,7 @@ export function HITLDecisionPane({
                   className="justify-start text-xs font-mono"
                 >
                   <XCircle className="h-3.5 w-3.5 mr-1 text-critical-red" />
-                  Reject (Distinct)
+                  No, different ones
                 </Button>
                 <Button
                   variant={selectedAction === "ESCALATE" ? "primary" : "secondary"}
@@ -139,7 +139,7 @@ export function HITLDecisionPane({
                   className="justify-start text-xs font-mono col-span-2"
                 >
                   <AlertCircle className="h-3.5 w-3.5 mr-1 text-amber" />
-                  Escalate to Supervisory Officer
+                  Not sure — ask a senior
                 </Button>
               </div>
             </div>

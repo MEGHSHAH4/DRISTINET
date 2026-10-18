@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { Download, FileText, AlertTriangle, FileJson, FileCode2, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { StepHeader } from "@/components/ui/step-header";
 import { generateCaseReport, generateCourtPdf } from "@/services/api/reportApi";
 
 export function ReportsPage() {
@@ -75,17 +76,14 @@ export function ReportsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-surface-base">
-      <header className="px-6 py-5 border-b border-border-subtle bg-surface-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Case Reports & Exports</h1>
-          <p className="text-sm text-text-secondary mt-1 max-w-2xl">
-            Generate authoritative dossiers for case {caseId}. Generation is logged in the audit trail.
-          </p>
-        </div>
-      </header>
+    <div className="flex flex-col h-full bg-surface-base overflow-y-auto">
+      <StepHeader
+        step="Step 4 of 4"
+        title="Make report"
+        whatItDoes="Create a summary of what you reviewed and accepted. Only human-reviewed findings go into the report — nothing unreviewed."
+      />
 
-      <div className="p-6 max-w-3xl mx-auto w-full mt-8 space-y-6">
+      <div className="p-6 max-w-3xl mx-auto w-full mt-4 space-y-6">
         <div className="rounded-xl border border-border-subtle bg-surface-1 p-6 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-electric-blue/10 rounded-lg text-electric-blue shrink-0">
@@ -93,15 +91,15 @@ export function ReportsPage() {
             </div>
             <div className="space-y-4 flex-1">
               <div>
-                <h3 className="text-base font-bold text-text-primary">Comprehensive Case Report</h3>
+                <h3 className="text-base font-bold text-text-primary">Case summary report</h3>
                 <p className="text-sm text-text-secondary">
-                  Generates a detailed summary of all case entities, relationships, and evidence. 
+                  A readable summary of the case: the people, phones and places found, how they may be linked, and the evidence behind each link.
                 </p>
               </div>
               
               <div className="space-y-3 pt-2">
                 <label className="block text-sm font-semibold text-text-primary">
-                  Format
+                  File type
                 </label>
                 <div className="flex items-center gap-3">
                   <button
@@ -112,7 +110,7 @@ export function ReportsPage() {
                     }`}
                   >
                     <FileCode2 className="h-4 w-4" />
-                    HTML Document
+                    Web page
                   </button>
                   <button
                     type="button"
@@ -122,25 +120,25 @@ export function ReportsPage() {
                     }`}
                   >
                     <FileJson className="h-4 w-4" />
-                    JSON Data
+                    Data file
                   </button>
                 </div>
               </div>
 
               <div className="space-y-2 pt-2">
                 <label className="block text-sm font-semibold text-text-primary">
-                  Analyst Comments (Optional)
+                  Your notes (optional)
                 </label>
                 <textarea 
                   value={analystComments}
                   onChange={(e) => setAnalystComments(e.target.value)}
                   className="w-full bg-surface-2 border border-border-subtle rounded-md p-3 text-sm text-text-primary focus:outline-none focus:border-electric-blue"
                   rows={3}
-                  placeholder="Include any final notes or contextual summaries..."
+                  placeholder="Anything you want to add to the report…"
                 />
               </div>
               
-              <div className="pt-4 flex items-center gap-3">
+              <div className="pt-4 flex flex-wrap items-center gap-3">
                 <Button 
                   variant="primary" 
                   onClick={handleGenerate}
@@ -148,7 +146,7 @@ export function ReportsPage() {
                   className="gap-2"
                 >
                   <Download className="h-4 w-4" />
-                  {status === "generating" ? "Generating..." : "Generate HTML/JSON"}
+                  {status === "generating" ? "Making report…" : "Download report"}
                 </Button>
                 
                 <Button 
@@ -158,25 +156,25 @@ export function ReportsPage() {
                   className="gap-2 text-amber border-amber/30 hover:bg-amber/10"
                 >
                   <Scale className="h-4 w-4" />
-                  Court-Ready PDF
+                  Official PDF version
                 </Button>
               </div>
 
               {status === "success" && (
                 <div className="mt-4 p-3 bg-verified-emerald/10 text-verified-emerald text-sm rounded-md border border-verified-emerald/20 font-medium">
-                  Request completed successfully.
+                  Report is ready — your download has started.
                 </div>
               )}
               {status === "unauthorized" && (
                 <div className="mt-4 p-3 bg-red-500/10 text-red-500 text-sm rounded-md border border-red-500/20 font-medium flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
-                  Unauthorized to generate report for this case.
+                  You don't have permission to make a report for this case.
                 </div>
               )}
               {status === "error" && (
                 <div className="mt-4 p-3 bg-red-500/10 text-red-500 text-sm rounded-md border border-red-500/20 font-medium flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
-                  Error: {errorMsg}
+                  Something went wrong: {errorMsg}
                 </div>
               )}
             </div>

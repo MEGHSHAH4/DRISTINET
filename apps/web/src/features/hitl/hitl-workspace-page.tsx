@@ -3,14 +3,12 @@ import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom"
 import {
   ListChecks,
   AlertTriangle,
-  GitMerge,
   ArrowLeft,
   Waypoints,
   FileSpreadsheet,
   CheckCircle2,
   RefreshCw,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HITLQueueFilters } from "./hitl-queue-filters";
 import { HITLTaskCard } from "./hitl-task-card";
@@ -87,26 +85,23 @@ export function HITLWorkspacePage() {
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-background overflow-hidden">
       {/* Top Header Bar */}
-      <header className="flex h-14 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 shrink-0">
+      <header className="flex h-auto min-h-14 items-center justify-between border-b border-border-subtle bg-surface-1 px-5 py-3 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-amber/10 border border-amber/30 text-amber">
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-amber/10 border border-amber/30 text-amber shrink-0">
             <ListChecks className="h-4 w-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-block rounded-full bg-electric-blue/10 border border-electric-blue/30 text-electric-blue text-[11px] font-bold px-2.5 py-0.5">
+                Step 2 of 4
+              </span>
               <h1 className="text-sm font-semibold text-text-primary">
-                Human-in-the-Loop (HITL) Review &amp; Evidentiary Arbitration
+                Review matches
               </h1>
-              <Badge tone="blue" className="text-micro font-mono">
-                STAGE 4 VALIDATION
-              </Badge>
-              <Badge tone="red" className="text-micro font-mono">
-                CONFIDENTIAL // LEA SENSITIVE
-              </Badge>
             </div>
-            <p className="text-micro font-mono text-text-muted mt-0.5">
-              Arbitration Band: 0.60–0.95 Confidence &bull; Ground Truth Admissibility Verification &bull; Case:{" "}
-              {caseIdFilter}
+            <p className="text-xs text-text-secondary mt-1 max-w-2xl leading-relaxed">
+              The system suggests things that might match — like two records for the same person.
+              Nothing is decided by itself: you look at the proof and choose <strong>Yes</strong>, <strong>No</strong>, or <strong>Later</strong>.
             </p>
           </div>
         </div>
@@ -128,13 +123,13 @@ export function HITLWorkspacePage() {
               <Link to={`/cases/${caseIdFilter}/graph`}>
                 <Button variant="ghost" size="sm" className="text-xs font-mono gap-1 text-text-secondary">
                   <Waypoints className="h-3.5 w-3.5 text-electric-blue-soft" />
-                  <span>Graph View</span>
+                  <span>Connections map</span>
                 </Button>
               </Link>
               <Link to={`/cases/${caseIdFilter}`}>
                 <Button variant="ghost" size="sm" className="text-xs font-mono gap-1 text-text-secondary">
                   <FileSpreadsheet className="h-3.5 w-3.5 text-verified-emerald" />
-                  <span>Case Overview</span>
+                  <span>Start here</span>
                 </Button>
               </Link>
             </div>
@@ -152,34 +147,24 @@ export function HITLWorkspacePage() {
         </div>
       </header>
 
-      {/* Stats Ribbon */}
-      <div className="flex items-center justify-between px-5 py-2 bg-surface-2 border-b border-border-subtle text-xs font-mono shrink-0 overflow-x-auto">
+      {/* Stats Ribbon — plain words */}
+      <div className="flex items-center justify-between px-5 py-2 bg-surface-2 border-b border-border-subtle text-xs shrink-0 overflow-x-auto">
         <div className="flex items-center gap-4">
-          <span className="text-text-muted">Queue Status:</span>
-          <span className="flex items-center gap-1.5 text-text-primary">
-            <span className="h-2 w-2 rounded-full bg-electric-blue" />
-            Total: <strong>{stats?.totalTasks ?? tasks.length}</strong>
-          </span>
-          <span className="flex items-center gap-1.5 text-amber">
+          <span className="flex items-center gap-1.5 text-amber font-semibold">
             <span className="h-2 w-2 rounded-full bg-amber" />
-            Pending: <strong>{stats?.pendingCount ?? 0}</strong>
+            Waiting for you: <strong>{stats?.pendingCount ?? 0}</strong>
           </span>
           <span className="flex items-center gap-1.5 text-critical-red">
             <AlertTriangle className="h-3 w-3" />
-            Critical Contradictions: <strong>{stats?.criticalCount ?? 0}</strong>
-          </span>
-          <span className="flex items-center gap-1.5 text-electric-blue-soft">
-            <GitMerge className="h-3 w-3" />
-            Identity Merges: <strong>{stats?.identityMergesCount ?? 0}</strong>
+            Needs attention: <strong>{stats?.criticalCount ?? 0}</strong>
           </span>
           <span className="flex items-center gap-1.5 text-verified-emerald">
             <CheckCircle2 className="h-3 w-3" />
-            Resolved: <strong>{stats?.resolvedCount ?? 0}</strong>
+            Done: <strong>{stats?.resolvedCount ?? 0}</strong>
           </span>
-        </div>
-
-        <div className="text-micro text-text-muted">
-          <span>Target SLA: &lt; 24h &bull; Statutory Authority: CrPC / IEA</span>
+          <span className="text-text-muted">
+            Total: <strong className="text-text-primary">{stats?.totalTasks ?? tasks.length}</strong>
+          </span>
         </div>
       </div>
 
@@ -220,12 +205,12 @@ export function HITLWorkspacePage() {
             ) : tasks.length === 0 ? (
               <div className="rounded-md border border-dashed border-border-subtle bg-surface-1 p-12 text-center space-y-3">
                 <CheckCircle2 className="h-10 w-10 text-verified-emerald mx-auto" />
-                <h3 className="text-sm font-semibold text-text-primary">Arbitration Queue Clear</h3>
+                <h3 className="text-sm font-semibold text-text-primary">All done — nothing waiting</h3>
                 <p className="text-xs text-text-muted max-w-md mx-auto">
-                  No pending entity merges, spatio-temporal contradictions, or tier elevation requests match your active filter criteria.
+                  There are no matches waiting for your review right now. When new files are read, suggestions will appear here.
                 </p>
                 <Button variant="secondary" size="sm" onClick={resetFilter} className="text-xs font-mono">
-                  Reset Filters
+                  Reset filters
                 </Button>
               </div>
             ) : (

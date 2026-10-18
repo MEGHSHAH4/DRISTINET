@@ -2,19 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft,
-  Share2,
   FileDown,
   Layers,
-  Network,
-  Clock,
-  FileCheck2,
-  FileText,
-  ShieldCheck,
-  PanelRight,
   Eye,
+  PanelRight,
   Info,
 } from "lucide-react";
 import { InvestigationShell } from "@/layouts/InvestigationShell/investigation-shell";
+import { CaseStepNav } from "./components/case-step-nav";
 import { GraphCanvas } from "@/components/graph/GraphCanvas";
 import { EntityDrawer } from "@/components/graph/drawers/EntityDrawer";
 import { EdgeDrawer } from "@/components/graph/drawers/EdgeDrawer";
@@ -22,17 +17,8 @@ import { EmptyDrawer } from "@/components/graph/drawers/EmptyDrawer";
 import { TemporalSlider } from "@/components/graph/TemporalSlider";
 import { ProvenanceViewer } from "@/components/evidence/ProvenanceViewer";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useGraphStore } from "@/stores/graphStore";
 import { cn } from "@/lib/utils";
-
-const CASE_NAV_ITEMS = [
-  { id: "overview", label: "Case Overview", icon: Layers, getPath: (id: string) => `/cases/${id}` },
-  { id: "graph", label: "Investigation Map", icon: Network, getPath: (id: string) => `/cases/${id}/graph`, active: true },
-  { id: "evidence", label: "Evidence & Records", icon: FileCheck2, getPath: (id: string) => `/cases/${id}/evidence` },
-  { id: "timeline", label: "Event Timeline", icon: Clock, getPath: (id: string) => `/cases/${id}/timeline` },
-  { id: "audit", label: "Audit Trail", icon: ShieldCheck, getPath: (id: string) => `/cases/${id}/audit` },
-];
 
 export function CaseGraphPage() {
   const {  caseId = "" } = useParams();
@@ -78,16 +64,13 @@ export function CaseGraphPage() {
                   </span>
                   <span className="text-border-strong">&mdash;</span>
                   <span className="text-sm font-semibold text-text-primary truncate">
-                    Case
+                    Step 3 of 4 · Connections map
                   </span>
-                  <Badge tone="blue" className="hidden sm:inline-flex text-[11px]">
-                    INVESTIGATION MAP
-                  </Badge>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {/* Clue Density Expansion Toggle */}
+                {/* Focus toggle: fewer dots, clearer picture */}
                 <Button
                   variant="secondary"
                   size="sm"
@@ -98,20 +81,20 @@ export function CaseGraphPage() {
                       ? "bg-electric-blue/10 text-electric-blue border-electric-blue/30 hover:bg-electric-blue/20"
                       : "bg-surface-2 text-text-primary",
                   )}
-                  title={showCoreConnectionsOnly ? "Click to reveal all 16 case entities and 20 relationships" : "Click to focus on 7 core relationships"}
+                  title={showCoreConnectionsOnly ? "Show every connection" : "Show only the key connections"}
                 >
                   <Eye className="h-3.5 w-3.5" />
                   <span>
                     {showCoreConnectionsOnly
-                      ? "+ Show all 20 connections"
-                      : "Show core connections (7)"}
+                      ? "Show all connections"
+                      : "Show key connections only"}
                   </span>
                 </Button>
 
                 <Button asChild variant="secondary" size="sm" className="gap-1.5 text-xs">
                   <Link to={`/cases/${caseId}`}>
                     <Layers className="h-3.5 w-3.5 text-text-muted" />
-                    <span className="hidden sm:inline">Case Overview</span>
+                    <span className="hidden sm:inline">Start here</span>
                   </Link>
                 </Button>
 
@@ -120,21 +103,16 @@ export function CaseGraphPage() {
                   size="sm"
                   className="gap-1.5 text-xs text-text-secondary hover:text-text-primary"
                   onClick={() => setIsDrawerCollapsed(isDrawerOpen)}
-                  title={isDrawerOpen ? "Hide Intelligence Panel" : "Show Intelligence Panel"}
+                  title={isDrawerOpen ? "Hide details panel" : "Show details panel"}
                 >
                   <PanelRight className="h-3.5 w-3.5" />
-                  <span className="hidden md:inline">{isDrawerOpen ? "Hide Panel" : "Show Panel"}</span>
-                </Button>
-
-                <Button variant="ghost" size="sm" className="gap-1.5 text-xs text-text-muted hover:text-text-primary">
-                  <Share2 className="h-3.5 w-3.5" />
-                  <span className="hidden md:inline">Share</span>
+                  <span className="hidden md:inline">{isDrawerOpen ? "Hide details" : "Show details"}</span>
                 </Button>
 
                 <Button
                   variant="restricted"
                   size="sm"
-                  restrictedReason="Supervisor clearance required for dossier export"
+                  restrictedReason="A supervisor's permission is needed to export"
                   className="gap-1.5 text-xs"
                 >
                   <FileDown className="h-3.5 w-3.5" />
@@ -148,7 +126,7 @@ export function CaseGraphPage() {
               <div className="flex items-center gap-1.5 2xl:gap-2 shrink-0 whitespace-nowrap">
                 <Info className="h-3.5 w-3.5 text-electric-blue shrink-0" />
                 <span className="whitespace-nowrap text-[11px] 2xl:text-xs text-text-secondary">
-                  <strong className="text-text-primary font-semibold">How to use:</strong> Click any person, phone, or connection to see why they are linked and inspect original evidence.
+                  <strong className="text-text-primary font-semibold">How to read this map:</strong> each dot is a person, phone, account, or place. A line means they may be connected — click anything to see the proof. Lines are suggestions, not proof.
                 </span>
               </div>
               <div className="flex items-center gap-2 2xl:gap-3 text-text-muted text-[10.5px] 2xl:text-[11px] font-medium shrink-0 whitespace-nowrap hidden sm:flex">
@@ -160,40 +138,7 @@ export function CaseGraphPage() {
             </div>
           </div>
         }
-        caseNav={
-          <nav className="p-2 select-none">
-            <div className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-text-muted">
-              Case Workspace
-            </div>
-            <ul className="flex flex-col gap-0.5 mt-1">
-              {CASE_NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const toPath = item.getPath(caseId);
-                return (
-                  <li key={item.id}>
-                    <Link
-                      to={toPath}
-                      className={cn(
-                        "flex items-center gap-3 rounded-md px-2.5 py-2 text-xs font-medium transition-colors",
-                        item.active
-                          ? "bg-surface-2 text-text-primary border-l-2 border-electric-blue font-semibold"
-                          : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
-                      )}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-4 w-4 shrink-0",
-                          item.active ? "text-electric-blue" : "text-text-muted",
-                        )}
-                      />
-                      <span>{item.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        }
+        caseNav={<CaseStepNav />}
         main={
           <div className="relative h-full w-full flex flex-col min-h-0 min-w-0 overflow-hidden">
             {/* Graph Canvas */}

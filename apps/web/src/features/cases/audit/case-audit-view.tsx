@@ -57,14 +57,15 @@ export function CaseAuditView({ caseId }: CaseAuditViewProps) {
       {/* Integrity Header & Metrics */}
       <AuditIntegrityHeader caseId={caseId} />
 
-      {/* Statutory Legal Governance Notice */}
+      {/* Plain-language notice */}
       <div className="rounded-lg border border-border-subtle bg-surface-1 px-4 py-3 text-xs text-text-muted flex items-start gap-3 shadow-xs">
         <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
         <div className="space-y-0.5 leading-relaxed">
           <span className="font-semibold text-text-secondary">
-            Statutory Tamper-Evident System Log (BSA §63 / IT Act §79A — Demo Policy Mapping):
+            Activity log — a tamper-evident record:
           </span>{" "}
-          All digital forensic interactions, note creations/edits, and evidentiary examinations are automatically recorded with SHA-256 cryptographic linkage. Demo entries illustrate permanent, tamper-evident audit logging principles.
+          Every action in this case (uploads, reviews, exports) is automatically written here with a
+          cryptographic link, so the history can't be quietly changed afterwards.
         </div>
       </div>
 
