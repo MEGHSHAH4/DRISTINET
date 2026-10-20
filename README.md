@@ -40,13 +40,17 @@ Screenshots live in `reports/screenshots/` in the full project archive.
 
 ## Quick start (local dev, ~3 minutes)
 
-Requirements: Python 3.11+, Node 20.19+ (or 22+). No Docker or Neo4j needed for the prototype;
+Requirements: Python **3.12.3** (pinned in `.python-version`), Node **24.20.0** (pinned in `.nvmrc`).
+No Docker or Neo4j needed for the prototype;
 a single SQLite file is the default database and the graph runs in-process. Real PostgreSQL and
 Neo4j are supported, tested swaps (see below).
 
 ```bash
 git clone https://github.com/MEGHSHAH4/DRISTINET.git && cd DRISTINET
-python3 -m pip install -r apps/api/requirements.txt
+python3 -m pip install -r apps/api/requirements.lock   # exact verified versions (98 packages)
+# requirements.txt holds the readable ranges; the heavy ML adapters it lists
+# (torch, transformers, PaddleOCR, PyMuPDF) are optional — the app import-guards
+# them and falls back, so they are not in the lock.
 python3 data/synthetic/generate.py            # deterministic synthetic dataset
 # No ClamAV on this machine? The scan gate is fail-closed, so use testgate
 # (safe substitute: flags only the EICAR test signature) or uploads stay quarantined:
@@ -71,6 +75,17 @@ Open <http://localhost:8000>. Sign in as `investigator` / `investigator-demo`
 | `outsider`     | INVESTIGATOR     | **denied** on CASE-0001 (jurisdiction mismatch)       |
 
 Dev loop: `make api` (auto-reload) + `make web` (Vite on :5173 proxies `/api` to :8000).
+
+### Or: single-container Docker image
+
+```bash
+docker build -t dristinet .
+docker run --rm -p 8000:8000 dristinet    # seeds demo data on start, then serves http://localhost:8000
+```
+
+The image pins Node 24.20.0 + Python 3.12.3 and installs from `apps/api/requirements.lock`.
+It is a demo image (testgate scanner, in-process graph, SQLite); for the full stack use the
+Docker Compose deployment below.
 
 ## How to use (the demo walkthrough)
 
@@ -119,7 +134,8 @@ Sign in as `investigator` / `investigator-demo` (all demo users: password = `<na
 ### Auto-start on server reboot
 
 The systemd unit `infrastructure/dristinet.service` can be installed at `/etc/systemd/system/dristinet.service`
-and enabled on boot. On a fresh server:
+and enabled on boot (the unit assumes the checkout lives at `/opt/dristinet` — edit its
+`WorkingDirectory`/`EnvironmentFile` paths if yours is elsewhere). On a fresh server:
 
 ```bash
 sudo cp infrastructure/dristinet.service /etc/systemd/system/dristinet.service
