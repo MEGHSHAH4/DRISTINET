@@ -38,7 +38,7 @@ The system receives synthetic or approved de-identified records. It preserves or
 - use centrality as proof of criminality;
 - create autonomous police alerts;
 - perform biometric or facial-recognition targeting;
-- use real personal data in the hackathon demo;
+- use real personal data in the demo;
 - claim live ICJS, CCTNS, CDR, IPDR, SDR, banking, CCTV, intelligence, forensic, or government access without written authorization and tested connectors;
 - claim legal certification, court admissibility, DPDP/BSA certification, production readiness, or 100% accuracy without appropriate evidence.
 
@@ -68,7 +68,7 @@ Use the project source index and memory before making project claims. The curren
 6. `DRISHTI-NET_FINAL_PROJECT_MEMORY.md` — durable context and corpus map.
 7. `DRISHTI-NET_SIX_ROLE_TEAM_EXECUTION_HANDBOOK.md` — role ownership and handoffs.
 8. `DRISHTI-NET_MASTER_WORKFLOW_AND_7_DAY_PROTOTYPE_PLAN.md` — easy-language build path.
-9. Official SIH, legal, research, premortem, schemas, diagrams, scripts, and historical drafts for their narrower subjects.
+9. Official project, legal, research, premortem, schemas, diagrams, scripts, and historical drafts for their narrower subjects.
 
 When a source conflicts with a newer corrected decision, preserve the old source for audit but use the corrected decision for implementation. Cite the specific filename when making project claims.
 
@@ -862,7 +862,7 @@ Never delete project sources merely to simplify context. Never place credentials
 [3]: `DRISHTI-NET_Comprehensive_Updated_Project_Report.md` "Corrected canonical DRISHTI-NET project definition"
 [4]: `DRISHTI-NET_Document_3_Technical_Requirements_Updated.md` "Updated technical requirements"
 [5]: `DRISHTI-NET_Document_4_Expert_Review.md` "Expert investigator and responsible-AI review"
-[6]: `DRISHTI-NET_FINAL_25_DAY_MVP_PLAN.md` "Final 25-day hackathon MVP plan"
+[6]: `DRISHTI-NET_FINAL_25_DAY_MVP_PLAN.md` "Final 25-day MVP plan"
 [7]: `DRISHTI-NET_SIX_ROLE_TEAM_EXECUTION_HANDBOOK.md` "Six-role team execution handbook"
 [8]: `DRISHTI-NET_MASTER_WORKFLOW_AND_7_DAY_PROTOTYPE_PLAN.md` "Easy-language master workflow and seven-day prototype plan"
 [9]: `pasted_content.txt` "Supplied role sample and secure-ingestion recommendations"

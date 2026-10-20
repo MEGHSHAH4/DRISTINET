@@ -138,7 +138,7 @@ export function LoginPage() {
       
       {/* Demo helper */}
       <div className="mt-8 text-center text-xs text-text-muted font-mono">
-        Authorized SIH 2026 personnel only. <br/>
+        Authorized personnel only. <br/>
         Demo user example: <span className="text-text-primary">investigator</span> / <span className="text-text-primary">investigator-demo</span>
       </div>
     </div>

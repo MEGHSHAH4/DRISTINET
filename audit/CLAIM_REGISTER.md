@@ -15,7 +15,7 @@ Every important architectural or business claim made in DRISTI-NET documentation
 **VERIFIED**. Initial population completed during Phase 0 Forensics.
 
 ## Target State
-Must be updated whenever a new feature is merged or a new capability is claimed in presentation materials (e.g., SIH presentations).
+Must be updated whenever a new feature is merged or a new capability is claimed in presentation materials (e.g., presentations).
 
 ## Register
 

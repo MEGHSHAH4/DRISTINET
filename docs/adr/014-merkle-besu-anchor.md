@@ -3,8 +3,8 @@
 ## Problem
 
 ADR-010 documented Merkle tree / transparency log as a future option when "a measured need"
-justified the infrastructure.  The PS 26189 evaluation now explicitly requires demonstrated
-Merkle anchoring as part of the blockchain-and-cybersecurity theme.
+justified the infrastructure.  Demonstrated Merkle anchoring is an explicit requirement of the
+system integrity design.
 
 ## Decision
 

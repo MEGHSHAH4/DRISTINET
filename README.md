@@ -7,8 +7,7 @@ human decisions. **It does not decide who is a criminal.** Everything in this re
 > The model proposes; the investigator decides. A shared identifier is a candidate relationship, not proof of identity.
 > Temporal decay changes current relevance; it does not rewrite history.
 
-Built by **Team TechFlex** for **Smart India Hackathon 2026** — Problem Statement **SIH26189**
-("AI-Powered Criminal Network Analysis System", Ministry of Home Affairs / NCRB; Theme: Blockchain & Cybersecurity).
+Built by **Team TechFlex**.
 
 **Status:** working prototype. The full workflow below is implemented and covered by automated tests;
 it is not a production system and carries no certification. Per-area status: `STATUS.md` and `docs/status.md`.
