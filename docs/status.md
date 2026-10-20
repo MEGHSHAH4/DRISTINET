@@ -1,7 +1,6 @@
 # Status against the blueprint (`docs/context.md` §3 vocabulary)
 
-Last audited: 2026-09-25 against `main` (see also `PROJECT_STATUS.md` for day-by-day and in-progress view,
-and `TASK_BOARD.md` for the live-verification methodology behind each item marked Demonstrated below).
+Last audited: 2026-09-25 against `main`; re-verified 2026-10-20 (`make test`: 81 passed, 7 skipped, 1 deselected; `make build-web` ok; live server smoke test ok). See `STATUS.md` at the repository root for the summary view.
 "Demonstrated" means a test in `apps/api/app/tests` or `tests/e2e` exercises it.
 
 ## §2 Product boundary

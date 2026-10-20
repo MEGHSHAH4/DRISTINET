@@ -1,3 +1,20 @@
+# Changelog
+
+## 2026-10-20 — Repository refresh and re-verification
+
+- README rewritten against the current code: install (local dev + Docker Compose), a step-by-step
+  "How to use" walkthrough, and a Verify section. Stale claims corrected — the test tree defines
+  99 test functions (`make test`: 81 passed, 7 skipped, 1 deselected on 2026-10-20); the Docker
+  stack is 10 services; references to non-existent files (`PROJECT_STATUS.md`, `TASK_BOARD.md`) removed.
+- `STATUS.md` header corrected from "PRODUCTION READY / certified" to working-prototype status,
+  per the project constitution (`docs/context.md` §3): the prototype is demonstrated and
+  test-covered on synthetic data; it is not production-certified.
+- `.gitignore`: `.env*` replaced with `.env` / `.env.*` + `!.env.example`, so the example
+  environment file is tracked while real secrets stay out.
+- `deploy.sh` (one-command Docker deployment) included in the repository.
+- Full verification on 2026-10-20: `make test` 81 passed / 7 skipped / 1 deselected;
+  `make build-web` ok; live server smoke test (health, demo login, SPA) ok.
+
 # DRISTI-NET: Comprehensive Frontend-Backend Integration & Hardening (Phase 5)
 
 ## Overview

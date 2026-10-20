@@ -1,9 +1,8 @@
 # DRISTI-NET Implementation Status
 
-**CURRENT STATUS: PRODUCTION READY**
+**CURRENT STATUS: WORKING PROTOTYPE** — the end-to-end workflow (upload → quarantine → scan gate → extraction → human review → bounded graph → report export) is implemented and test-covered on synthetic data. It is not a production system and carries no certification. Requirement-by-requirement status: `docs/status.md`.
 
-The repository has undergone a comprehensive forensic cleanup and integration audit.
-All architectural requirements have been verified in the codebase.
+Re-verified 2026-10-20: `make test` — 81 passed, 7 skipped, 1 deselected; `make build-web` ok; live server smoke test (health endpoint, demo login, SPA) ok.
 
 ## Confirmed Realizations:
 1. **Frontend-Backend Integration**: Frontend API wrappers successfully route to actual `fastapi` backend endpoints (`getCaseGraph`, `getHITLStats`, `getEdgeDetails`). No fallback simulated data is used.
@@ -13,4 +12,4 @@ All architectural requirements have been verified in the codebase.
 5. **Worker Orchestration**: `worker.py` orchestrates purely without recursive Kafka rebroadcasts (utilizing explicit `async_allowed=False` bounds).
 6. **Infrastructure Topology**: `docker-compose.yml` mounts 10 discrete services, including Hyperledger Besu and Kafka KRaft nodes.
 
-*Date of Certification: 2026-09-25*
+*Status summary maintained with the codebase; last updated 2026-10-20 (original audit 2026-09-25).*
