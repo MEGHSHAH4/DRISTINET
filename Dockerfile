@@ -9,9 +9,10 @@ RUN npm run build
 FROM python:3.12.3-slim
 WORKDIR /app
 COPY apps/api/requirements.txt apps/api/requirements.lock apps/api/
-# lru-dict (in requirements.lock) builds a native wheel and needs a compiler;
-# python:slim ships none. Render's first deploy failed on missing gcc.
-RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+# lru-dict (in requirements.lock) builds a native wheel and needs a compiler
+# plus C library headers; python:slim ships neither. The first Render deploy
+# failed on missing gcc, the second on missing stdlib.h.
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r apps/api/requirements.lock
 COPY . .
 COPY --from=web /web/dist apps/web/dist
