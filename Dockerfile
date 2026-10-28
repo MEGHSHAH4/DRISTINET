@@ -21,4 +21,4 @@ ENV DRISHTI_SCANNER_MODE=testgate
 EXPOSE 8000
 # Seed is idempotent (existing users/assignments are skipped); it creates the
 # demo users and cases and pushes the synthetic files through the pipeline.
-CMD ["sh", "-c", "python3 -m apps.api.app.seed --ingest && python3 -m uvicorn apps.api.app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "python3 -m apps.api.app.seed --ingest && python3 -m uvicorn apps.api.app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

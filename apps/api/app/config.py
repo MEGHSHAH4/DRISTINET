@@ -67,6 +67,9 @@ NEO4J_QUERY_TIMEOUT_S = float(_env("NEO4J_QUERY_TIMEOUT_S", "10"))
 # same "empty = not configured" pattern as NEO4J_URI. Never a source of truth for anything Postgres/
 # SQLite already owns -- job status, claims, reviews etc. stay in the relational DB.
 REDIS_URL = _env("REDIS_URL", "")
+# Hosting only: browser origins allowed to call this API cross-origin (comma-separated).
+# Default is the Vercel demo frontend; Render sets DRISHTI_CORS_ORIGINS if it ever changes.
+CORS_ORIGINS = [o.strip() for o in _env("CORS_ORIGINS", "https://dristinet.vercel.app").split(",") if o.strip()]
 LOGIN_THROTTLE_MAX_ATTEMPTS = int(_env("LOGIN_THROTTLE_MAX_ATTEMPTS", "5"))
 LOGIN_THROTTLE_WINDOW_S = int(_env("LOGIN_THROTTLE_WINDOW_S", str(15 * 60)))
 SYNTHETIC_DIR = REPO_ROOT / "data" / "synthetic" / "golden"

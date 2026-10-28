@@ -5,6 +5,7 @@ import logging
 import uuid
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -34,6 +35,15 @@ if neo4j_store.available():
 
 app = FastAPI(title="DRISHTI-NET prototype API", version="0.1.0",
               description="Evidence-linked relationship discovery for authorized human review. Synthetic data only. The system proposes; the investigator decides.")
+
+# Hosting only: the Vercel demo frontend calls this API cross-origin, so the
+# browser preflight must succeed. No auth logic is changed by this middleware.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=config.CORS_ORIGINS,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Trace-Id"],
+)
 
 
 @app.middleware("http")
